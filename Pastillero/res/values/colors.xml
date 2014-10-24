@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="color_negro">#000000</color>
+    <color name="color_blanco">#ffffff</color>
+    <color name="color_base">#E89527</color>
+    <color name="color_blanco_trans">#ffffffff</color>
+    <color name="color_gris">#535353</color>
+</resources>

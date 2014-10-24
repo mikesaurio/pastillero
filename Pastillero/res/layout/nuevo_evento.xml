@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/marco_boton"
+    android:orientation="vertical"
+    android:padding="5dp" >
+
+    <LinearLayout
+        android:id="@+id/ll_inicial"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="5dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/evento_btn_generico"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:background="@drawable/selector_btn_square"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="@string/terminar"
+            android:textColor="@drawable/selector_tv_color_btn" />
+
+        <TextView
+            android:id="@+id/evento_tv_titulo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:text="@string/agregar_evento" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view1"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@+id/ll_inicial"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:background="#000000" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/view1"
+        android:overScrollMode="never" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:scrollbarAlwaysDrawVerticalTrack="true" >
+
+            <EditText
+                android:id="@+id/evento_et_nombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/selector_edittext"
+                android:ems="10"
+                android:hint="@string/nombre_medicamento" >
+
+                <requestFocus />
+            </EditText>
+
+
+            <RelativeLayout
+                android:id="@+id/rr_calendar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp" >
+
+                <ImageButton
+                    android:id="@+id/evento_ib_calendar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:background="@drawable/marco_boton"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_launcher_calendar" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/button1"
+                    android:text="@string/que_dias" />
+            </RelativeLayout>
+
+            <CalendarView
+                android:id="@+id/calendarViewInicio"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:maxDate="31/12/2015"
+                android:minDate="01/01/2014"
+                android:showWeekNumber="false"
+                android:visibility="gone" />
+
+            <CalendarView
+                android:id="@+id/calendarViewFin"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:maxDate="31/12/2015"
+                android:minDate="01/01/2014"
+                android:showWeekNumber="false"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tv_fecha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <View
+                android:id="@+id/view_2"
+                android:layout_width="30dp"
+                android:layout_height="2dp"
+                android:layout_gravity="left"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/color_gris" />
+
+            <RelativeLayout
+                android:id="@+id/rr_reloj"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp" >
+
+                <ImageButton
+                    android:id="@+id/evento_ib_reloj"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:background="@drawable/marco_boton"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_launcher_reloj" />
+
+                <TextView
+                    android:id="@+id/textView8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/button3"
+                    android:text="@string/hora_inicio" />
+            </RelativeLayout>
+
+            <com.wheel.WheelView
+                android:id="@+id/evento_wheel_reloj"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tv_reloj"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <View
+                android:id="@+id/view_3"
+                android:layout_width="30dp"
+                android:layout_height="2dp"
+                android:layout_gravity="left"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/color_gris" />
+
+            <RelativeLayout
+                android:id="@+id/rr_hora"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp" >
+
+                <ImageButton
+                    android:id="@+id/evento_ib_hora"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:background="@drawable/marco_boton"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_launcher_reloj_cada" />
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/button2"
+                    android:text="@string/a_que_hora" />
+            </RelativeLayout>
+
+            <com.wheel.WheelView
+                android:id="@+id/evento_wheel_hora"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tv_hora"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

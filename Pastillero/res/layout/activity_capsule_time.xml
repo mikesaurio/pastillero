@@ -1,0 +1,31 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="5dp"
+    android:background="@color/color_negro"
+    tools:context="com.mikesaurio.pastillero.fragments.DashboardFragment" >
+
+  
+
+    <ScrollView
+        android:id="@+id/capsule_time_sv_eventos"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@+id/capsule_time_sv_eventos"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/capsule_time_sv_eventos"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/marco_boton"
+        android:overScrollMode="never" >
+
+        <LinearLayout
+            android:id="@+id/capsule_time_ll_eventos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

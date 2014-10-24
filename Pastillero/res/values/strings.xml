@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Pastillero</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    
+    <!-- actividad principal -->
+    <string name="agregar_evento">Agregar medicamento</string>
+    
+    
+    
+    <!-- dialogo add -->
+    <string name="nombre_medicamento">Nombre del medicamento</string>
+	<string name="que_dias">¿Qué días vas a tomarlo?</string>
+	<string name="a_que_hora">¿Cada cuántas horas?</string>
+	<string name="hora_inicio">¿A qué hora iniciamos?</string>
+	<string name="aceptar">Aceptar</string>
+	<string name="terminar">Terminar</string>
+	<string name="nuevo_medicamento">Medicamento</string>
+	<string name="fecha_inicio">Fecha inicio:</string>
+	<string name="fecha_fin">Fecha fin: </string>
+	<string name="titulo_calendario">Calendario</string>
+	<string name="titulo_hora">Hora</string>
+	<string name="titulo_tiempo">Tiempo</string>
+	<string name="llenar_nombre">Debes poner el nombre del medicamento</string>
+	<string name="llenar_todo">Debes llenar todos los datos</string>
+	
+	<!-- dialogo borrar editar -->
+	<string name="dialogo_editar">Editar</string>
+	<string name="dialogo_borrar">Borrar</string>
+	<string name="dialogo_texto">¿Qué deseas hacer?</string>
+	
+	
+	
+</resources>

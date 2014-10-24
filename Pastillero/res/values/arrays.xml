@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="nav_options">
+        <item>Mi Pastillero</item>
+        <item>Acerca de</item>
+    </string-array>
+
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:yourapp="http://schemas.android.com/apk/res-auto" >
+
+    <item
+        android:id="@+id/action_mas"
+        android:icon="@drawable/ic_launcher_mas"
+        android:title="Agregar"
+        yourapp:showAsAction="ifRoom"/>
+
+</menu>
