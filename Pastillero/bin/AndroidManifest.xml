@@ -8,6 +8,8 @@
         android:minSdkVersion="14"
         android:targetSdkVersion="19" />
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -31,6 +33,14 @@
             android:theme="@android:style/Theme.Holo.Light.Dialog"
             android:windowSoftInputMode="stateAlwaysVisible" >
         </activity>
+
+        <receiver android:name=".BootCompletedIntentReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        
+        <service android:name="com.mikesaurio.pastillero.servicio.servicio_alarma"></service>
     </application>
 
 </manifest>

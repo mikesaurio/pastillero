@@ -25,6 +25,7 @@ import com.mikesaurio.pastillero.R;
 import com.mikesaurio.pastillero.bd.DBHelper;
 import com.mikesaurio.pastillero.bean.DatosBean;
 import com.mikesaurio.pastillero.dialogos.DatosDialogActivity;
+import com.mikesaurio.pastillero.servicio.servicio_alarma;
 
 /**
  * clase que controla el add de eventos
@@ -53,10 +54,6 @@ public class DashboardFragment extends Fragment  {
 			Bundle savedInstanceState) {
 
 		View v = inflater.inflate(R.layout.activity_capsule_time, container,false);
-
-
-	//	btn_agregar = (Button) v.findViewById(R.id.capsule_time_btn_agregar);
-		//btn_agregar.setOnClickListener(this);
 		
 		ll_eventos =(LinearLayout)v.findViewById(R.id.capsule_time_ll_eventos);
 		
@@ -79,6 +76,7 @@ public class DashboardFragment extends Fragment  {
 		        if(resultCode == DatosDialogActivity.OK){
 		            String result=data.getStringExtra("resultado");
 		            llenarEvento(result);
+		            iniciarServicio();
 		        }
 		    }
 		 if (requestCode == 1) {
@@ -86,27 +84,11 @@ public class DashboardFragment extends Fragment  {
 		            String result=data.getStringExtra("resultado");
 		            udateEvento(result,id_);
 		            id_= null;
+		            iniciarServicio();
 		        }
 		    }
 		super.onActivityResult(requestCode, resultCode, data);
 	}
-
-
-/*	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-		
-		case R.id.capsule_time_btn_agregar:
-
-			startActivityForResult(new Intent(activity, DatosDialogActivity.class),0);
-			
-			break;
-
-		default:
-			break;
-		}
-
-	}*/
 
 
 	
@@ -283,6 +265,13 @@ public class DashboardFragment extends Fragment  {
 	
 	public void setMensaje(){
 		startActivityForResult(new Intent(activity, DatosDialogActivity.class),0);
+	}
+	
+	
+	public void iniciarServicio(){
+		Intent pushIntent = new Intent(activity, servicio_alarma.class); 
+		pushIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		startActivity(pushIntent);
 	}
 
 }
