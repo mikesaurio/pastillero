@@ -269,8 +269,9 @@ public class DashboardFragment extends Fragment  {
 	
 	
 	public void iniciarServicio(){
-		Intent pushIntent = new Intent(activity, servicio_alarma.class); 
-		activity.startService(pushIntent);
+		
+		activity.stopService(new Intent(activity, servicio_alarma.class));
+		activity.startService(new Intent(activity, servicio_alarma.class));
 	}
 
 }

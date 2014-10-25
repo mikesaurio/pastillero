@@ -58,13 +58,14 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
 	private String reloj_hora= null,cada_horas=null,calendario_dias= null;
 	private WheelView wheel;
 	private View view2,view3;
+	private int FLAG_RELOJ=-1;
 	
 	
 	private TextView tv_reloj,tv_hora;
 	
 	
 	private boolean validador[]= new boolean[]{false,false,false};//fecha,reloj,hora
-	
+	private  String reloj2[];
 	
 	
 	 String reloj[] = new String[] {"", "1:00","2:00","3:00","4:00","5:00","6:00","7:00","8:00","9:00","10:00","11:00","12:00"
@@ -351,15 +352,16 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
 		String fecha= now.get(Calendar.DAY_OF_MONTH)+"/"+((now.get(Calendar.MONTH))+1)+"/"+now.get(Calendar.YEAR);
 		if(fecha_inicial==null||fecha_inicial.equals(fecha)){
 			int hora= now.get(Calendar.HOUR_OF_DAY);
-			 String reloj2[] = new String[reloj.length-hora];
-			 	
+			  reloj2 = new String[reloj.length-hora];
 			 	reloj2[0]="";
 				for(int i=hora+1, j=1;i<reloj.length;i++,j++){
 					reloj2[j]=reloj[i]; 
 				}
+				FLAG_RELOJ=0;
 				initWheel(R.id.evento_wheel_reloj, reloj2);
 		}else{
-			initWheel(R.id.evento_wheel_reloj, reloj);
+				FLAG_RELOJ=1;
+				initWheel(R.id.evento_wheel_reloj, reloj);
 		}
 		
 			Utilerias.hideSoftKeyboard(DatosDialogActivity.this,et_nombre);
@@ -376,10 +378,7 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
 			tv_hora.setVisibility(TextView.GONE);
 			tv_reloj.setVisibility(TextView.GONE);
 			tv_fecha.setVisibility(TextView.GONE);
-	
-			
-			
-			
+
 			view2.setVisibility(View.GONE);
 			view3.setVisibility(View.GONE);
 			
@@ -555,10 +554,17 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
 		public void onScrollingFinished(WheelView wheel) {
 			wheelScrolled = false;
 			if(flag_boton==HORA){
-				cada_horas= hora[wheel.getCurrentItem()];
+				
+					cada_horas= hora[wheel.getCurrentItem()];
+				
+				
 				
 			}else if(flag_boton==RELOJ){
-				reloj_hora= reloj[wheel.getCurrentItem()];
+				if(FLAG_RELOJ==0){
+					reloj_hora= reloj2[wheel.getCurrentItem()];
+				}else if(FLAG_RELOJ==1){
+					reloj_hora= reloj[wheel.getCurrentItem()];
+				}
 			}
 			
 		}
