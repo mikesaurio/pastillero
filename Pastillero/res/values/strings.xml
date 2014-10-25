@@ -25,6 +25,7 @@
 	<string name="titulo_tiempo">Tiempo</string>
 	<string name="llenar_nombre">Debes poner el nombre del medicamento</string>
 	<string name="llenar_todo">Debes llenar todos los datos</string>
+	<string name="fecha_incorrecta">La fecha de fin no puede ser menor a la de inicio</string>
 	
 	<!-- dialogo borrar editar -->
 	<string name="dialogo_editar">Editar</string>

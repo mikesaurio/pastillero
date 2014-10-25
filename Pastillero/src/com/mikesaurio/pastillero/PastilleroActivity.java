@@ -84,9 +84,6 @@ public class PastilleroActivity extends ActionBarActivity {
 		};
 
 		drawerLayout.setDrawerListener(drawerToggle);
-
-		
-		
 		
 		selectItem(0);
 

@@ -4,7 +4,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
@@ -14,12 +13,10 @@ import android.widget.Toast;
 public class servicio_alarma extends Service {
 
 	private static Timer timer = new Timer(); 
-    private Context ctx;
 	
     public void onCreate() 
     {
-          super.onCreate();
-          ctx = this; 
+          super.onCreate(); 
           startService();
     }
 
@@ -55,5 +52,13 @@ public class servicio_alarma extends Service {
 	public IBinder onBind(Intent intent) {
 		return null;
 	}
+	
+	@Override
+	public int onStartCommand(Intent intent,int flags,int startId) {
+	    super.onStartCommand(intent, flags, startId);
+
+	    return START_STICKY;
+	}
+
 
 }

@@ -1,10 +1,13 @@
 package com.mikesaurio.pastillero.dialogos;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.TimerTask;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -64,11 +67,11 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
 	
 	
 	
-	final String reloj[] = new String[] { "1:00","2:00","3:00","4:00","5:00","6:00","7:00","8:00","9:00","10:00","11:00","12:00"
+	 String reloj[] = new String[] {"", "1:00","2:00","3:00","4:00","5:00","6:00","7:00","8:00","9:00","10:00","11:00","12:00"
 			,"13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00"
 			,"21:00","22:00","23:00","24:00"};
 	
-	final String hora[] = new String[] { "2","4","6","8","12","24","48","72",};
+	 String hora[] = new String[] { "","2","4","6","8","12","24","48","72"};
 	
 
 	@Override
@@ -186,7 +189,12 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
 				validarTodo();
 				
 			}else if(flag_boton==CALENDARIO){
-				validaCalendario();
+				try {
+					validaCalendario();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 			}else if(flag_boton==HORA){
 				validarHora();
@@ -239,37 +247,43 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
 
 
 	public void validarHora() {
-		flag_boton=TERMINAR;
-		btn_generico.setText(getString(R.string.terminar));
-		tv_titulo.setText(getString(R.string.agregar_evento));
 		
-		rr_reloj.setVisibility(RelativeLayout.VISIBLE);
-		rr_calendario.setVisibility(RelativeLayout.VISIBLE);
-		et_nombre.setVisibility(EditText.VISIBLE);
-		
-		wheel.setVisibility(WheelView.GONE);
-		
-		tv_hora.setText(cada_horas+" hrs");
-		validador[2]=true;
-		
-		if(validador[0]){
-			tv_fecha.setVisibility(TextView.VISIBLE);
+		if(cada_horas!=null&&cada_horas!=""){
+			
+			flag_boton=TERMINAR;
+			btn_generico.setText(getString(R.string.terminar));
+			tv_titulo.setText(getString(R.string.agregar_evento));
+			
+			rr_reloj.setVisibility(RelativeLayout.VISIBLE);
+			rr_calendario.setVisibility(RelativeLayout.VISIBLE);
+			et_nombre.setVisibility(EditText.VISIBLE);
+			
+			wheel.setVisibility(WheelView.GONE);
+			
+			tv_hora.setText(cada_horas+" hrs");
+			validador[2]=true;
+			
+			if(validador[0]){
+				tv_fecha.setVisibility(TextView.VISIBLE);
+			}
+			if(validador[1]){
+				tv_reloj.setVisibility(TextView.VISIBLE);
+			}
+			if(validador[2]){
+				tv_hora.setVisibility(TextView.VISIBLE);
+			}
+			
+			view2.setVisibility(View.VISIBLE);
+			view3.setVisibility(View.VISIBLE);
 		}
-		if(validador[1]){
-			tv_reloj.setVisibility(TextView.VISIBLE);
-		}
-		if(validador[2]){
-			tv_hora.setVisibility(TextView.VISIBLE);
-		}
-		
-		view2.setVisibility(View.VISIBLE);
-		view3.setVisibility(View.VISIBLE);
 		
 	}
 	
 	
 	
 	public void iniciarHora() {
+		
+		
 		Utilerias.hideSoftKeyboard(DatosDialogActivity.this,et_nombre);
 		flag_boton=HORA;
 		
@@ -297,31 +311,33 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
 
 
 	public void validarReloj() {
-		flag_boton=TERMINAR;
-		btn_generico.setText(getString(R.string.terminar));
-		tv_titulo.setText(getString(R.string.agregar_evento));
-		
-		rr_hora.setVisibility(RelativeLayout.VISIBLE);
-		rr_calendario.setVisibility(RelativeLayout.VISIBLE);
-		et_nombre.setVisibility(EditText.VISIBLE);
-		
-		wheel.setVisibility(WheelView.GONE);
-		
-		tv_reloj.setText(reloj_hora+" hrs");
-		validador[1]=true;
-		
-		if(validador[0]){
-			tv_fecha.setVisibility(TextView.VISIBLE);
+		if(reloj_hora!=null&&reloj_hora!=""){
+			flag_boton=TERMINAR;
+			btn_generico.setText(getString(R.string.terminar));
+			tv_titulo.setText(getString(R.string.agregar_evento));
+			
+			rr_hora.setVisibility(RelativeLayout.VISIBLE);
+			rr_calendario.setVisibility(RelativeLayout.VISIBLE);
+			et_nombre.setVisibility(EditText.VISIBLE);
+			
+			wheel.setVisibility(WheelView.GONE);
+			
+			tv_reloj.setText(reloj_hora+" hrs");
+			validador[1]=true;
+			
+			if(validador[0]){
+				tv_fecha.setVisibility(TextView.VISIBLE);
+			}
+			if(validador[1]){
+				tv_reloj.setVisibility(TextView.VISIBLE);
+			}
+			if(validador[2]){
+				tv_hora.setVisibility(TextView.VISIBLE);
+			}
+			
+			view2.setVisibility(View.VISIBLE);
+			view3.setVisibility(View.VISIBLE);
 		}
-		if(validador[1]){
-			tv_reloj.setVisibility(TextView.VISIBLE);
-		}
-		if(validador[2]){
-			tv_hora.setVisibility(TextView.VISIBLE);
-		}
-		
-		view2.setVisibility(View.VISIBLE);
-		view3.setVisibility(View.VISIBLE);
 	
 		
 	}
@@ -329,29 +345,47 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
 
 
 	public void iniciarReloj() {
-		Utilerias.hideSoftKeyboard(DatosDialogActivity.this,et_nombre);
-		flag_boton=RELOJ;
 		
-		btn_generico.setText(getString(R.string.aceptar));
-		tv_titulo.setText(getString(R.string.titulo_tiempo));
-		et_nombre.setVisibility(EditText.GONE);
+		//obtenemos las horas que le quedan al dia
+		Calendar now = Calendar.getInstance();
+		String fecha= now.get(Calendar.DAY_OF_MONTH)+"/"+((now.get(Calendar.MONTH))+1)+"/"+now.get(Calendar.YEAR);
+		if(fecha_inicial==null||fecha_inicial.equals(fecha)){
+			int hora= now.get(Calendar.HOUR_OF_DAY);
+			 String reloj2[] = new String[reloj.length-hora];
+			 	
+			 	reloj2[0]="";
+				for(int i=hora+1, j=1;i<reloj.length;i++,j++){
+					reloj2[j]=reloj[i]; 
+				}
+				initWheel(R.id.evento_wheel_reloj, reloj2);
+		}else{
+			initWheel(R.id.evento_wheel_reloj, reloj);
+		}
 		
-		rr_hora.setVisibility(RelativeLayout.GONE);
-		rr_calendario.setVisibility(RelativeLayout.GONE);
-
+			Utilerias.hideSoftKeyboard(DatosDialogActivity.this,et_nombre);
+			flag_boton=RELOJ;
+			
+			btn_generico.setText(getString(R.string.aceptar));
+			tv_titulo.setText(getString(R.string.titulo_tiempo));
+			et_nombre.setVisibility(EditText.GONE);
+			
+			rr_hora.setVisibility(RelativeLayout.GONE);
+			rr_calendario.setVisibility(RelativeLayout.GONE);
+	
+			
+			tv_hora.setVisibility(TextView.GONE);
+			tv_reloj.setVisibility(TextView.GONE);
+			tv_fecha.setVisibility(TextView.GONE);
+	
+			
+			
+			
+			view2.setVisibility(View.GONE);
+			view3.setVisibility(View.GONE);
+			
+	    	et_nombre.setError(null);//removes error
+	    	et_nombre.clearFocus();
 		
-		tv_hora.setVisibility(TextView.GONE);
-		tv_reloj.setVisibility(TextView.GONE);
-		tv_fecha.setVisibility(TextView.GONE);
-
-		initWheel(R.id.evento_wheel_reloj, reloj);
-		
-		
-		view2.setVisibility(View.GONE);
-		view3.setVisibility(View.GONE);
-		
-    	et_nombre.setError(null);//removes error
-    	et_nombre.clearFocus();
 	}
 	
 	
@@ -361,35 +395,51 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
 
 	/**
 	 * Valida al calendario y prepara la vista
+	 * @throws ParseException 
 	 */
-	public void validaCalendario() {
-		flag_boton=TERMINAR;
-		btn_generico.setText(getString(R.string.terminar));
-		tv_titulo.setText(getString(R.string.agregar_evento));
-		
-		rr_reloj.setVisibility(RelativeLayout.VISIBLE);
-		rr_hora.setVisibility(RelativeLayout.VISIBLE);
-		et_nombre.setVisibility(EditText.VISIBLE);
-		calendarViewInicio.setVisibility(CalendarView.GONE);
-		calendarViewFin.setVisibility(CalendarView.GONE);
-		
-		calendario_dias=fecha_inicial+"@"+fecha_final;
-		tv_fecha.setText(getString(R.string.fecha_inicio)+" "+fecha_inicial+"\n"+getString(R.string.fecha_fin)+" "+fecha_final);
-		
-		validador[0]=true;
-		
-		if(validador[0]){
-			tv_fecha.setVisibility(TextView.VISIBLE);
+	public void validaCalendario() throws ParseException {
+		Calendar now = Calendar.getInstance();
+		if(fecha_inicial==null){
+			fecha_inicial= now.get(Calendar.DAY_OF_MONTH)+"/"+((now.get(Calendar.MONTH))+1)+"/"+now.get(Calendar.YEAR);
 		}
-		if(validador[1]){
-			tv_reloj.setVisibility(TextView.VISIBLE);
+		if(fecha_final==null){
+			fecha_final= now.get(Calendar.DAY_OF_MONTH)+"/"+((now.get(Calendar.MONTH))+1)+"/"+now.get(Calendar.YEAR);
 		}
-		if(validador[2]){
-			tv_hora.setVisibility(TextView.VISIBLE);
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); 
+		Date date1 = formatter.parse(fecha_inicial);  
+		Date date2 = formatter.parse(fecha_final);  
+		if (date1.getTime() > date2.getTime())  
+		{  
+		Toast.makeText(this, getString(R.string.fecha_incorrecta), Toast.LENGTH_LONG).show();
+		}else{ 
+				flag_boton=TERMINAR;
+				btn_generico.setText(getString(R.string.terminar));
+				tv_titulo.setText(getString(R.string.agregar_evento));
+				
+				rr_reloj.setVisibility(RelativeLayout.VISIBLE);
+				rr_hora.setVisibility(RelativeLayout.VISIBLE);
+				et_nombre.setVisibility(EditText.VISIBLE);
+				calendarViewInicio.setVisibility(CalendarView.GONE);
+				calendarViewFin.setVisibility(CalendarView.GONE);
+				
+				calendario_dias=fecha_inicial+"@"+fecha_final;
+				tv_fecha.setText(getString(R.string.fecha_inicio)+" "+fecha_inicial+"\n"+getString(R.string.fecha_fin)+" "+fecha_final);
+				
+				validador[0]=true;
+				
+				if(validador[0]){
+					tv_fecha.setVisibility(TextView.VISIBLE);
+				}
+				if(validador[1]){
+					tv_reloj.setVisibility(TextView.VISIBLE);
+				}
+				if(validador[2]){
+					tv_hora.setVisibility(TextView.VISIBLE);
+				}
+		
+				view2.setVisibility(View.VISIBLE);
+				view3.setVisibility(View.VISIBLE);
 		}
-
-		view2.setVisibility(View.VISIBLE);
-		view3.setVisibility(View.VISIBLE);
 		
 	}
 	
@@ -397,6 +447,11 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
 	 * prepara la vista para que el calendario pueda verse
 	 */
 	public void iniciarCalendario(){
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DATE,Calendar.getInstance().getActualMinimum(Calendar.DATE));
+		long date = calendar.getTime().getTime();
+		
+		
 		Utilerias.hideSoftKeyboard(DatosDialogActivity.this,et_nombre);
 		flag_boton=CALENDARIO;
 		btn_generico.setText(getString(R.string.aceptar));
@@ -409,12 +464,13 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
 		
 		
 
-		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,
 				Utilerias.getTamanoPantalla(DatosDialogActivity.this).y / 3);
 
 		calendarViewInicio.setVisibility(CalendarView.VISIBLE);
 		calendarViewInicio.setLayoutParams(lp);
+		calendarViewInicio.setMinDate(date);
 		calendarViewInicio.setOnDateChangeListener(new OnDateChangeListener() {
 
             @Override
@@ -426,6 +482,7 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
         });
 		calendarViewFin.setVisibility(CalendarView.VISIBLE);
 		calendarViewFin.setLayoutParams(lp);
+		calendarViewFin.setMinDate(date);
 		calendarViewFin.setOnDateChangeListener(new OnDateChangeListener() {
 
             @Override

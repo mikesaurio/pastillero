@@ -9,9 +9,10 @@ import com.mikesaurio.pastillero.servicio.servicio_alarma;
 public class BootCompletedIntentReceiver extends BroadcastReceiver {
  @Override
  public void onReceive(Context context, Intent intent) {
-  if ("android.intent.action.BOOT_COMPLETED".equals(intent.getAction())) {
-   Intent pushIntent = new Intent(context, servicio_alarma.class);
-   context.startService(pushIntent);
-  }
+
+     /***** For start Service  ****/
+      Intent myIntent = new Intent(context, servicio_alarma.class);
+      context.startService(myIntent);
+ 
  }
 }

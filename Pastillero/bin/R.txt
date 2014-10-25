@@ -420,10 +420,11 @@ int string aceptar 0x7f0a0015
 int string action_settings 0x7f0a000f
 int string agregar_evento 0x7f0a0010
 int string app_name 0x7f0a000d
-int string dialogo_borrar 0x7f0a0020
-int string dialogo_editar 0x7f0a001f
-int string dialogo_texto 0x7f0a0021
+int string dialogo_borrar 0x7f0a0021
+int string dialogo_editar 0x7f0a0020
+int string dialogo_texto 0x7f0a0022
 int string fecha_fin 0x7f0a0019
+int string fecha_incorrecta 0x7f0a001f
 int string fecha_inicio 0x7f0a0018
 int string hello_world 0x7f0a000e
 int string hora_inicio 0x7f0a0014
