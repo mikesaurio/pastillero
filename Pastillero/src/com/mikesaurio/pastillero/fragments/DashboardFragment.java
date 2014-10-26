@@ -76,7 +76,6 @@ public class DashboardFragment extends Fragment  {
 		        if(resultCode == DatosDialogActivity.OK){
 		            String result=data.getStringExtra("resultado");
 		            llenarEvento(result);
-		            iniciarServicio();
 		        }
 		    }
 		 if (requestCode == 1) {
@@ -84,7 +83,7 @@ public class DashboardFragment extends Fragment  {
 		            String result=data.getStringExtra("resultado");
 		            udateEvento(result,id_);
 		            id_= null;
-		            iniciarServicio();
+
 		        }
 		    }
 		super.onActivityResult(requestCode, resultCode, data);
@@ -119,6 +118,7 @@ public class DashboardFragment extends Fragment  {
 			datosBean =	BD.getDatos(bd);
 			BD.close();
 			
+            iniciarServicio();
 			removeView();
 			if(datosBean!=null){
 				iniciarDatos();

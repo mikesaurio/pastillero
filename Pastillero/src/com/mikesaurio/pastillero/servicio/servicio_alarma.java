@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import android.app.Service;
 import android.content.Intent;
@@ -24,7 +25,7 @@ public class servicio_alarma extends Service {
 
 	private static Timer timer[];
 	private DatosBean datosBean; 
-	int val=0;
+  	int m = 0;
 	
     public void onCreate() 
     {
@@ -36,7 +37,19 @@ public class servicio_alarma extends Service {
     private void startService() throws ParseException
     {          
     	timer = new Timer[datosBean.getId().length];
-    	for( val=0;val<datosBean.getId().length;val++)	{	
+    	m=0;
+    	for(int val = 0; val< timer.length ; val++){	
+    		 TimerTask task = new TimerTask() {
+     	        @Override
+     	        public void run() {
+
+     		          Message message = toastHandler.obtainMessage(); 
+     		          message.obj = datosBean.getNombre()[m]+"";
+     		          m+=1;
+     		          toastHandler.sendMessage(message);
+     	        }
+     	    };
+    		
     			Calendar now = Calendar.getInstance();
     			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"); 
     			String fechaCel= now.get(Calendar.DAY_OF_MONTH)+"/"+((now.get(Calendar.MONTH))+1)+"/"+now.get(Calendar.YEAR)+
@@ -45,30 +58,17 @@ public class servicio_alarma extends Service {
     			Date date1 = formatter.parse(fechaCel);  
     			Date date2 = formatter.parse(fechaInicio);
     			long diff = date2.getTime() - date1.getTime();
-    			Log.d("******************Nombre", datosBean.getNombre()[val]+"");
-    			Log.d("******************Cel", fechaCel+"");
-    			Log.d("******************Ini", fechaInicio+"");
-    			Log.d("******************", diff+"");
+    			long cada = TimeUnit.HOURS.toMillis(Integer.parseInt(datosBean.getFrecuencia()[val]+""));
+    			timer[val]= new Timer();
+    			timer[val].scheduleAtFixedRate( task, diff,cada);
+
     			
-    			timer[val].scheduleAtFixedRate( new TimerTask() {
-    				public void run() {
-    					Handler handler = new Handler();
-    					handler.post(new Runnable() {
-    						public void run() {
-    							String[] messageString = new String[1];
-    					          Message message = toastHandler.obtainMessage();
-    					          messageString[0]=datosBean.getNombre()[val]+"";
-    					          message.obj = messageString;
-    					          toastHandler.sendMessage(message);
-    						}
-    					});
-    				}
-    			}, 0, 300000);
     	}
 
     }
     
     public void cargarDatos() {
+    	datosBean = null;
 		datosBean= new DatosBean();
 		try {
 			DBHelper	BD = new DBHelper(this);
@@ -89,27 +89,14 @@ public class servicio_alarma extends Service {
 		
 	}
 
-   /* private class mainTask extends TimerTask
-    { 
-    	String nombre="zazaza";
-
-		public mainTask(String nombre) {
-			this.nombre=nombre;
-			
-		}
-
-		public void run() 
-        {
-		   	  String[] messageString = new String[1];
-	          Message message = toastHandler.obtainMessage();
-	          messageString[0]=nombre;
-	          message.obj = messageString;
-	          toastHandler.sendMessage(message);
-        }
-    }    */
+   
 
     public void onDestroy() 
     {
+    	for(int val=0;val<timer.length;val++)	{	
+    		timer[0].cancel();
+    	}
+    	datosBean = null;
           super.onDestroy();
          
     }
@@ -119,9 +106,10 @@ public class servicio_alarma extends Service {
         @Override
         public void handleMessage(Message msg)
         {
-        	String[] status = (String[]) msg.obj;
-            Toast.makeText(getApplicationContext(),status[0], Toast.LENGTH_SHORT).show();
-
+        	String status = (String) msg.obj;
+           // Toast.makeText(getApplicationContext(),status, Toast.LENGTH_SHORT).show();
+            //enviar Alarma
+             
         }
     };   
     
