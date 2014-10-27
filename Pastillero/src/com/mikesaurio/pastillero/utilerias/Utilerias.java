@@ -1,5 +1,8 @@
 package com.mikesaurio.pastillero.utilerias;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
@@ -52,7 +55,12 @@ public class Utilerias {
 	
 	
 	
-	
+	 public static String getDate(long milliSeconds, SimpleDateFormat formatter)
+	    {
+	         Calendar calendar = Calendar.getInstance();
+	         calendar.setTimeInMillis(milliSeconds);
+	         return formatter.format(calendar.getTime());
+	    }
 	
 	
 }

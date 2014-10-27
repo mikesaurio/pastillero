@@ -29,6 +29,7 @@ import com.mikesaurio.pastillero.PastilleroActivity;
 import com.mikesaurio.pastillero.R;
 import com.mikesaurio.pastillero.bd.DBHelper;
 import com.mikesaurio.pastillero.bean.DatosBean;
+import com.mikesaurio.pastillero.utilerias.Utilerias;
 
 public class servicio_alarma extends Service {
 
@@ -55,7 +56,6 @@ public class servicio_alarma extends Service {
     		 TimerTask task = new TimerTask() {
      	        @Override
      	        public void run() {
-
      		          Message message = toastHandler.obtainMessage(); 
      		          message.obj = datosBean.getNombre()[m]+"";
      		          m+=1;
@@ -65,30 +65,41 @@ public class servicio_alarma extends Service {
     		
     			Calendar now = Calendar.getInstance();
     			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"); 
+    			
     			String fechaCel= now.get(Calendar.DAY_OF_MONTH)+"/"+((now.get(Calendar.MONTH))+1)+"/"+now.get(Calendar.YEAR)+
     					" "+now.get(Calendar.HOUR_OF_DAY)+":"+now.get(Calendar.MINUTE)+":"+now.get(Calendar.SECOND);
+    		
     			String fechaInicio=datosBean.getFecha_inicio()[val]+" "+datosBean.getHora_inicio()[val]+":00";
+    			
+    			
     			Date date1 = formatter.parse(fechaCel);  
     			Date date2 = formatter.parse(fechaInicio);
+    			
     			long diff = date2.getTime() - date1.getTime();
     			
     			long cada = TimeUnit.HOURS.toMillis(Integer.parseInt(datosBean.getFrecuencia()[val]+""));
-    			Log.d("**************cada",cada+"");
     		
     			timer[val]= new Timer();
     			if(diff>=0){
     				
     				timer[val].scheduleAtFixedRate( task, diff,cada);
     			}
-    			else{
+    			else {
+    		
+    				long diferencia =  date1.getTime()-date2.getTime();
+    				long dif = date1.getTime();
     				
-    				//se debe obtener la fecha de inicio y compararla con la hora actual
-    				//ver cuantas milisegundos han pasado desde que la alarma inici—
-    				//comparar en ciclo horainicio + = frecuencia hasta que sea mayor 
-    				//se obtiene diferencia y se asigna a diff
-    			
+    				do{
+ 
+    					dif += cada;
+    					   					
+    				}while(dif<=date1.getTime());    				
+    				long difs = dif- diferencia;
+
+        			Date date3 = formatter.parse(Utilerias.getDate(difs, formatter));       			
+        			diff = date3.getTime() - date1.getTime();
     				
-    				timer[val].scheduleAtFixedRate( task, 0,cada);
+    				timer[val].scheduleAtFixedRate( task, difs,cada);
     			}
     			
     	}
@@ -241,5 +252,7 @@ public class servicio_alarma extends Service {
         return notification;
     }
 	
+    
+   
 
 }
