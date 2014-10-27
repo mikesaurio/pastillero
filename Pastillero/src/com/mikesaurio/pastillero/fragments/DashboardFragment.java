@@ -10,22 +10,22 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.mikesaurio.pastillero.R;
 import com.mikesaurio.pastillero.bd.DBHelper;
 import com.mikesaurio.pastillero.bean.DatosBean;
 import com.mikesaurio.pastillero.dialogos.DatosDialogActivity;
 import com.mikesaurio.pastillero.servicio.servicio_alarma;
+import com.mikesaurio.pastillero.utilerias.Utilerias;
 
 /**
  * clase que controla el add de eventos
@@ -40,6 +40,7 @@ public class DashboardFragment extends Fragment  {
 	Activity activity;
 	private DatosBean datosBean;
 	private AlertDialog customDialog;
+	private View view;
 	public static String id_ =null;
 	
 	
@@ -57,16 +58,14 @@ public class DashboardFragment extends Fragment  {
 		
 		ll_eventos =(LinearLayout)v.findViewById(R.id.capsule_time_ll_eventos);
 		
+		 view = inflater.inflate(R.layout.row_default_pastillero, container,false);
+		 TextView tv_rowdefault = (TextView)view.findViewById(R.id.tv_rowdefault);
+		 tv_rowdefault.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,(Utilerias.getTamanoPantalla(activity).y/2)-Utilerias.getTamanoActionBar(activity)));
 		
 		cargarDatos();
 		
 		return v;
 	}
-	
-	
-	
-	
-	
 	
 	
 
@@ -118,10 +117,15 @@ public class DashboardFragment extends Fragment  {
 			datosBean =	BD.getDatos(bd);
 			BD.close();
 			
-            iniciarServicio();
+			iniciarServicio();
 			removeView();
+			
 			if(datosBean!=null){
+
 				iniciarDatos();
+			}
+			else{
+				addView(view);
 			}
 			
 		} catch (IOException e) {
@@ -205,6 +209,7 @@ public class DashboardFragment extends Fragment  {
 
 	public void removeView() {
 		ll_eventos.removeAllViews();
+		
 		
 	}
 

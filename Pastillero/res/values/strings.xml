@@ -32,6 +32,11 @@
 	<string name="dialogo_borrar">Borrar</string>
 	<string name="dialogo_texto">¿Qué deseas hacer?</string>
 	
+	<!-- fragment principal -->
+	<string name="sin_eventos">No tienes recordatorios</string>
+	
+	<!-- Notificacion -->
+	<string name="titulo_notificacion">Tiempo de tomar:</string>
 	
 	
 </resources>

@@ -3,11 +3,15 @@ package com.mikesaurio.pastillero.utilerias;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 public class Utilerias {
+	
+
+
 	/**
 	 * Hides the soft keyboard
 	 */
@@ -31,6 +35,24 @@ public class Utilerias {
 		int height = size.y;
 		return (new Point(width, height));
 	}
+	
+	/**
+	 * obtienes el tama–o del ActionBar
+	 * @param activity
+	 * @return
+	 */
+	public static int getTamanoActionBar(Activity activity){
+		TypedValue tv = new TypedValue();
+		if (activity.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
+		{
+		   return TypedValue.complexToDimensionPixelSize(tv.data,activity.getResources().getDisplayMetrics());
+		}
+		return 0;
+	}
+	
+	
+	
+	
 	
 	
 }
