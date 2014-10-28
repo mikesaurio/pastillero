@@ -22,10 +22,6 @@ public class CustomList extends ArrayAdapter<String> {
      * cosntructor
      * @param context (Activity)
      * @param nombre
-     * @param hora_inicio
-     * @param hora_fin
-     * @param distancia
-     * @param imagen
      */
     public CustomList(Activity context,String[] nombre) {
         super(context, R.layout.list_simple, nombre);

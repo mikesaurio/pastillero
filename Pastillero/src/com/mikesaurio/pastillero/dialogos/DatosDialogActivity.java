@@ -7,8 +7,8 @@ import java.util.Date;
 import java.util.TimerTask;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,13 +19,13 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CalendarView;
-import android.widget.CalendarView.OnDateChangeListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.CalendarView.OnDateChangeListener;
 
 import com.mikesaurio.pastillero.R;
 import com.mikesaurio.pastillero.utilerias.Utilerias;
@@ -34,34 +34,43 @@ import com.wheel.OnWheelChangedListener;
 import com.wheel.OnWheelScrollListener;
 import com.wheel.WheelView;
 
-
-public class DatosDialogActivity extends Activity implements OnClickListener {
+/**
+ * Actividad que controla el llenado de un nuevo medicamento
+ * @author mikesaurio
+ *
+ */
+public  class DatosDialogActivity extends Activity implements OnClickListener {
 	
 	
 	public static final int OK=10;
-	
-	private AlertDialog customDialog;
+
 	public static final int TERMINAR=0;
 	public static final int CALENDARIO=1;
 	public static final int RELOJ=2;
 	public static final int HORA=3;
-	public int flag_boton=0;
-	public Button btn_generico;
-	public TextView tv_fecha;
-	private String fecha_inicial,fecha_final;
+	private int flag_boton=0;
+	private Button btn_generico;
+	private TextView tv_fecha;
+	private String fecha_inicial;
+
+	private String fecha_final;
 	private RelativeLayout rr_calendario, rr_reloj, rr_hora;
 	private ImageButton ib_calendar, ib_reloj, ib_hora;
 	private CalendarView calendarViewInicio, calendarViewFin;
-	private EditText et_nombre;
+	private  EditText et_nombre;
 	private TextView tv_titulo;
 	private WheelView wheel_hora;
 	private String reloj_hora= null,cada_horas=null,calendario_dias= null;
 	private WheelView wheel;
-	private View view2,view3;
+	private View view2;
+
+	private View view3;
 	private int FLAG_RELOJ=-1;
+	private boolean editar= false;
 	
 	
-	private TextView tv_reloj,tv_hora;
+	private TextView tv_reloj;
+	private TextView tv_hora;
 	
 	
 	private boolean validador[]= new boolean[]{false,false,false};//fecha,reloj,hora
@@ -73,12 +82,14 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
 			,"21:00","22:00","23:00","24:00"};
 	
 	 String hora[] = new String[] { "","2","4","6","8","12","24","48","72"};
+
 	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		setContentView(R.layout.nuevo_evento);
 
 		btn_generico =(Button)findViewById(R.id.evento_btn_generico);
@@ -125,24 +136,27 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
 		
 		view2=(View)findViewById(R.id.view_2);
 		view3=(View)findViewById(R.id.view_3);
+
 		
 		Bundle extras = getIntent().getExtras(); 
 		if (extras != null) {
+			
 		   String[] info = extras.getStringArray("info");
-		   
 		   Utilerias.hideSoftKeyboard(DatosDialogActivity.this, et_nombre);
 		   llenarTodo(info);
 		   
 		}
 		
-		
-		
-		
 	}
 	
 	
-	
 
+
+
+	/**
+	 * 
+	 * @param info
+	 */
 	public void llenarTodo(String[] info) {
 		flag_boton=TERMINAR;
 		btn_generico.setText(getString(R.string.terminar));
@@ -162,6 +176,17 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
 			calendario_dias=info[1]+"@"+info[2];
 			tv_fecha.setVisibility(TextView.VISIBLE);
 			tv_fecha.setText(getString(R.string.fecha_inicio)+" "+info[1]+"\n"+getString(R.string.fecha_fin)+" "+info[2]);
+			SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy");
+			try {
+				calendarViewInicio.setMinDate((f.parse(info[1]).getTime()));
+				calendarViewFin.setMinDate((f.parse(info[1]).getTime()));
+				calendarViewInicio.setDate ((f.parse(info[1])).getTime(), true, true);
+				calendarViewFin.setDate ((f.parse(info[2])).getTime(), true, true);
+				editar = true;
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			
 		}
 		if(validador[1]){
 			reloj_hora=info[3];
@@ -188,18 +213,10 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
 		case R.id.evento_btn_generico:
 			if(flag_boton==TERMINAR){
 				validarTodo();
-				
 			}else if(flag_boton==CALENDARIO){
-				try {
 					validaCalendario();
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
 			}else if(flag_boton==HORA){
 				validarHora();
-				
 			}else if(flag_boton==RELOJ){
 				validarReloj();
 			}
@@ -243,9 +260,11 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
 		}
 		
 	}
+	
+	
 
 
-
+	/***********************************************************HORA************************************************************************/	
 
 	public void validarHora() {
 		
@@ -308,9 +327,11 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
     	et_nombre.clearFocus();
 		
 	}
+	/***********************************************************TERMINA HORA************************************************************************/	
+	
 
 
-
+	/***********************************************************RELOJ************************************************************************/	
 	public void validarReloj() {
 		if(reloj_hora!=null&&reloj_hora!=""){
 			flag_boton=TERMINAR;
@@ -386,17 +407,16 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
 	    	et_nombre.clearFocus();
 		
 	}
+	/***********************************************************TERMINA RELOJ************************************************************************/	
 	
 	
 	
-
-
-
+	/***********************************************************CALENDARIO************************************************************************/		
 	/**
 	 * Valida al calendario y prepara la vista
 	 * @throws ParseException 
 	 */
-	public void validaCalendario() throws ParseException {
+	public void validaCalendario() {
 		Calendar now = Calendar.getInstance();
 		if(fecha_inicial==null){
 			fecha_inicial= now.get(Calendar.DAY_OF_MONTH)+"/"+((now.get(Calendar.MONTH))+1)+"/"+now.get(Calendar.YEAR);
@@ -405,8 +425,15 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
 			fecha_final= now.get(Calendar.DAY_OF_MONTH)+"/"+((now.get(Calendar.MONTH))+1)+"/"+now.get(Calendar.YEAR);
 		}
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); 
-		Date date1 = formatter.parse(fecha_inicial);  
-		Date date2 = formatter.parse(fecha_final);  
+		Date date1 = null;
+		Date date2 = null;
+		try {
+			date1 = formatter.parse(fecha_inicial);
+			 date2 = formatter.parse(fecha_final); 
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
 		if (date1.getTime() > date2.getTime())  
 		{  
 		Toast.makeText(this, getString(R.string.fecha_incorrecta), Toast.LENGTH_LONG).show();
@@ -418,6 +445,7 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
 				rr_reloj.setVisibility(RelativeLayout.VISIBLE);
 				rr_hora.setVisibility(RelativeLayout.VISIBLE);
 				et_nombre.setVisibility(EditText.VISIBLE);
+
 				calendarViewInicio.setVisibility(CalendarView.GONE);
 				calendarViewFin.setVisibility(CalendarView.GONE);
 				
@@ -444,14 +472,23 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
 	
 	/**
 	 * prepara la vista para que el calendario pueda verse
+	 * @throws ParseException 
 	 */
-	public void iniciarCalendario(){
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.DATE,Calendar.getInstance().getActualMinimum(Calendar.DATE));
-		long date = calendar.getTime().getTime();
+	public void iniciarCalendario() {
+		Calendar now = Calendar.getInstance();
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); 
+		String fechaCel= now.get(Calendar.DAY_OF_MONTH)+"/"+((now.get(Calendar.MONTH))+1)+"/"+now.get(Calendar.YEAR);
+		
+		long date = 0;
+		try {
+			date = formatter.parse(fechaCel).getTime();
+		} catch (ParseException e) {
+
+			e.printStackTrace();
+		}
 		
 		
-		Utilerias.hideSoftKeyboard(DatosDialogActivity.this,et_nombre);
+		Utilerias.hideSoftKeyboard(this,et_nombre);
 		flag_boton=CALENDARIO;
 		btn_generico.setText(getString(R.string.aceptar));
 		tv_titulo.setText(getString(R.string.titulo_calendario));
@@ -465,11 +502,15 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
 
 				LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,
-				Utilerias.getTamanoPantalla(DatosDialogActivity.this).y / 3);
+				Utilerias.getTamanoPantalla(this).y / 3);
 
+		if(!editar){
+			calendarViewInicio.setMinDate(date);
+			calendarViewFin.setMinDate(date);
+		}	
+				
 		calendarViewInicio.setVisibility(CalendarView.VISIBLE);
 		calendarViewInicio.setLayoutParams(lp);
-		calendarViewInicio.setMinDate(date);
 		calendarViewInicio.setOnDateChangeListener(new OnDateChangeListener() {
 
             @Override
@@ -481,7 +522,6 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
         });
 		calendarViewFin.setVisibility(CalendarView.VISIBLE);
 		calendarViewFin.setLayoutParams(lp);
-		calendarViewFin.setMinDate(date);
 		calendarViewFin.setOnDateChangeListener(new OnDateChangeListener() {
 
             @Override
@@ -505,6 +545,8 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
     	et_nombre.clearFocus();
 	}
 
+
+	/************************************************************TERMINA CALENDARIO***********************************************************************/	
 	
 	
 	
@@ -521,8 +563,7 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
 	
 	
 	
-	
-/***********************************************************************************************************************************/	
+/*******************************************************************WhEEL****************************************************************/	
 
 	/*Iniciar wheel*/
 	
@@ -625,5 +666,5 @@ public class DatosDialogActivity extends Activity implements OnClickListener {
 
 	}
 	/*Termina WHELL*/
-
+	/************************************************************TERMINA WHEEL***********************************************************************/	
 }

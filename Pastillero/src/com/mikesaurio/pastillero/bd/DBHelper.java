@@ -15,6 +15,11 @@ import android.util.Log;
 
 import com.mikesaurio.pastillero.bean.DatosBean;
 
+/**
+ * Clase que construya todo el entorno de la base de datos y las conecciones
+ * @author mikesaurio
+ *
+ */
 public class DBHelper extends SQLiteOpenHelper {
 	/** Path donde se encontrara alojada la BD en el teléfono **/
 	private static String DB_PATH = "";
@@ -146,6 +151,11 @@ public class DBHelper extends SQLiteOpenHelper {
 	}
 
 
+	/**
+	 * Obtienes todos los datos de la base de datos
+	 * @param bd
+	 * @return DatosBean
+	 */
 	public DatosBean getDatos(SQLiteDatabase bd) {
 		DatosBean bean = null;
 		
@@ -191,6 +201,12 @@ public class DBHelper extends SQLiteOpenHelper {
 	}
 
 
+	/**
+	 * inserta un nuevo row
+	 * @param bd
+	 * @param valores SQLiteDatabase bd;
+	 *  			   String[] valores
+	 */
 	public void setDatos(SQLiteDatabase bd, String[] valores) {
 		try{
 			String cons="insert into datos (nombre,fecha_inicio,fecha_fin,hora_inicio,frecuencia)"
@@ -204,6 +220,11 @@ public class DBHelper extends SQLiteOpenHelper {
 	}
 
 
+	/**
+	 * Borras un row en especifico
+	 * @param bd
+	 * @param id (String) id del Row
+	 */
 	public void borrarDato(SQLiteDatabase bd, String id) {
 		try{
 			bd.execSQL("delete from datos where id = "+ id);
@@ -212,7 +233,12 @@ public class DBHelper extends SQLiteOpenHelper {
 		
 	}
 
-
+	/**
+	 * Actualiza un row de la BD
+	 * @param bd
+	 * @param valores  (String[]) valores
+	 * @param id (String) id
+	 */
 	public void updateDatos(SQLiteDatabase bd, String[] valores, String id) {
 				try{
 					String cons="UPDATE  datos set nombre = '"+valores[0]+"',fecha_inicio = '"+valores[1]+"',fecha_fin = '"+valores[2]+

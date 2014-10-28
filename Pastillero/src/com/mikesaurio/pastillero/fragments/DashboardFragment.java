@@ -35,7 +35,6 @@ import com.mikesaurio.pastillero.utilerias.Utilerias;
  */
 public class DashboardFragment extends Fragment  {
 
-	//Button btn_agregar;
 	LinearLayout ll_eventos;
 	Activity activity;
 	private DatosBean datosBean;
@@ -44,6 +43,10 @@ public class DashboardFragment extends Fragment  {
 	public static String id_ =null;
 	
 	
+	/**
+	 * Constructor
+	 * @param activity
+	 */
 	public DashboardFragment(Activity activity){
 		this.activity=activity;
 	}
@@ -90,134 +93,30 @@ public class DashboardFragment extends Fragment  {
 
 
 	
-	private void udateEvento(String result,String id) {
-		String[] valores = result.split("@");
-		try {
-			DBHelper	BD = new DBHelper(activity);
-			SQLiteDatabase bd = BD.loadDataBase(BD);
-			BD.updateDatos(bd,valores,id);
-			BD.close();
-			
-			cargarDatos();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-	}
-
-
-
-		
-	public void cargarDatos() {
-		datosBean= new DatosBean();
-		try {
-			DBHelper	BD = new DBHelper(activity);
-			SQLiteDatabase bd = BD.loadDataBase(BD);
-			datosBean =	BD.getDatos(bd);
-			BD.close();
-			
-			iniciarServicio();
-			removeView();
-			
-			if(datosBean!=null){
-
-				iniciarDatos();
-			}
-			else{
-				addView(view);
-			}
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-	}
-
-	public void iniciarDatos() {
-		
-		
-		for(int i=0;i<datosBean.getId().length;i++){
-			LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			View view =  inflater.inflate(R.layout.row_evento, null);
-		
-			TextView evento_titulo =(TextView)view.findViewById(R.id.row_evento_titulo);
-			evento_titulo.setText(datosBean.getNombre()[i]);
-			
-			TextView tv_inicio =(TextView)view.findViewById(R.id.row_evento_tv_inicio);
-			tv_inicio.setText(datosBean.getFecha_inicio()[i]);
-			
-			TextView tv_fin =(TextView)view.findViewById(R.id.row_evento_tv_fin);
-			tv_fin.setText(datosBean.getFecha_fin()[i]);
-			
-			TextView tv_hora =(TextView)view.findViewById(R.id.row_evento_tv_hora);
-			tv_hora.setText(datosBean.getHora_inicio()[i]+" hrs");
-			
-			TextView tv_tiempo =(TextView)view.findViewById(R.id.row_evento_tv_tiempo);
-			tv_tiempo.setText(datosBean.getFrecuencia()[i]+" hrs");
-
-			view.setTag(datosBean.getId()[i]);
-			view.setOnLongClickListener(new OnLongClickListener() {
-				
-				@Override
-				public boolean onLongClick(View v) {
-
-					showDialogEdit(v.getTag()+"").show();
-					return false;
-				}
-			});
-			addView(view);
-		}
-		
-	}
-
 	
-	
-	public void llenarEvento(String result) {
-		
-		String[] valores = result.split("@");
-		try {
-			DBHelper	BD = new DBHelper(activity);
-			SQLiteDatabase bd = BD.loadDataBase(BD);
-			BD.setDatos(bd,valores);
-			BD.close();
-			
-			cargarDatos();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-	}
-	
-	public void borrarEvento(String id) {
-		
-		try {
-			DBHelper	BD = new DBHelper(activity);
-			SQLiteDatabase bd = BD.loadDataBase(BD);
-			BD.borrarDato(bd,id);
-			BD.close();
-			
-			cargarDatos();
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-	}
-	
-
+	/**
+	 * Remueve una vista
+	 */
 	public void removeView() {
 		ll_eventos.removeAllViews();
 		
 		
 	}
 
+	/**
+	 * agrega una vista
+	 * @param linear
+	 */
 	public void addView(View linear){
 		ll_eventos.addView(linear);
 	}
 	
-	
+	/**
+	 * inicia la actividad
+	 */
+	public void setMensaje(){
+		startActivityForResult(new Intent(activity, DatosDialogActivity.class),0);
+	}
 	
 	/**
 	 * Dialogo para borrar un registro app
@@ -268,15 +167,152 @@ public class DashboardFragment extends Fragment  {
         return (customDialog=builder.create());// return customDialog;//regresamos el di‡logo
     }  
 	
-	public void setMensaje(){
-		startActivityForResult(new Intent(activity, DatosDialogActivity.class),0);
-	}
 	
 	
+	
+	/**
+	 * Termina e inicia el servicio de nuevo
+	 */
 	public void iniciarServicio(){
-		
 		activity.stopService(new Intent(activity, servicio_alarma.class));
 		activity.startService(new Intent(activity, servicio_alarma.class));
 	}
+	
+	
+	
+	/*******************************************************Metodo de interaccion con la Base de datos*****************************************/
+	/**
+	 * Actualiza un evento
+	 * @param result
+	 * @param id
+	 */
+	private void udateEvento(String result,String id) {
+		String[] valores = result.split("@");
+		try {
+			DBHelper	BD = new DBHelper(activity);
+			SQLiteDatabase bd = BD.loadDataBase(BD);
+			BD.updateDatos(bd,valores,id);
+			BD.close();
+			
+			cargarDatos();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+
+
+	/**
+	 * Obtiene los datos de la BD	
+	 */
+	public void cargarDatos() {
+		datosBean= new DatosBean();
+		try {
+			DBHelper	BD = new DBHelper(activity);
+			SQLiteDatabase bd = BD.loadDataBase(BD);
+			datosBean =	BD.getDatos(bd);
+			BD.close();
+			
+			iniciarServicio();
+			removeView();
+			
+			if(datosBean!=null){
+
+				iniciarDatos();
+			}
+			else{
+				addView(view);
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	/**
+	 * Inicia los objetos con la informacion de la BD
+	 */
+	public void iniciarDatos() {
+		for(int i=0;i<datosBean.getId().length;i++){
+			LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			View view =  inflater.inflate(R.layout.row_evento, null);
+		
+			TextView evento_titulo =(TextView)view.findViewById(R.id.row_evento_titulo);
+			evento_titulo.setText(datosBean.getNombre()[i]);
+			
+			TextView tv_inicio =(TextView)view.findViewById(R.id.row_evento_tv_inicio);
+			tv_inicio.setText(datosBean.getFecha_inicio()[i]);
+			
+			TextView tv_fin =(TextView)view.findViewById(R.id.row_evento_tv_fin);
+			tv_fin.setText(datosBean.getFecha_fin()[i]);
+			
+			TextView tv_hora =(TextView)view.findViewById(R.id.row_evento_tv_hora);
+			tv_hora.setText(datosBean.getHora_inicio()[i]+" hrs");
+			
+			TextView tv_tiempo =(TextView)view.findViewById(R.id.row_evento_tv_tiempo);
+			tv_tiempo.setText(datosBean.getFrecuencia()[i]+" hrs");
+
+			view.setTag(datosBean.getId()[i]);
+			view.setOnLongClickListener(new OnLongClickListener() {
+				
+				@Override
+				public boolean onLongClick(View v) {
+
+					showDialogEdit(v.getTag()+"").show();
+					return false;
+				}
+			});
+			addView(view);
+		}
+		
+	}
+
+	
+	/**
+	 * Carga un evento en la BD
+	 * @param result
+	 */
+	public void llenarEvento(String result) {
+		
+		String[] valores = result.split("@");
+		try {
+			DBHelper	BD = new DBHelper(activity);
+			SQLiteDatabase bd = BD.loadDataBase(BD);
+			BD.setDatos(bd,valores);
+			BD.close();
+			
+			cargarDatos();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	/**
+	 * Elimina un eevnto en especifico
+	 * @param id
+	 */
+	public void borrarEvento(String id) {
+		
+		try {
+			DBHelper	BD = new DBHelper(activity);
+			SQLiteDatabase bd = BD.loadDataBase(BD);
+			BD.borrarDato(bd,id);
+			BD.close();
+			
+			cargarDatos();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	/*******************************************************Termina Metodo de interaccion con la Base de datos*****************************************/	
+	
 
 }

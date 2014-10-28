@@ -22,7 +22,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.mikesaurio.pastillero.PastilleroActivity;
@@ -31,6 +30,11 @@ import com.mikesaurio.pastillero.bd.DBHelper;
 import com.mikesaurio.pastillero.bean.DatosBean;
 import com.mikesaurio.pastillero.utilerias.Utilerias;
 
+/**
+ * Servicio que controla las notificaciones
+ * @author mikesaurio
+ *
+ */
 public class servicio_alarma extends Service {
 
 	private static Timer timer[];
@@ -48,6 +52,10 @@ public class servicio_alarma extends Service {
           
     }
 
+    /**
+     * Crea un TimerTask por evento
+     * @throws ParseException
+     */
     private void startService() throws ParseException
     {          
     	timer = new Timer[datosBean.getId().length];
@@ -106,6 +114,10 @@ public class servicio_alarma extends Service {
 
     }
     
+    
+    /**
+     * Carga los datos de la base de datos
+     */
     public void cargarDatos() {
     	datosBean = null;
 		datosBean= new DatosBean();
@@ -129,7 +141,9 @@ public class servicio_alarma extends Service {
 	}
 
    
-
+	/**
+	 * al destruir el servicio limpiamos todo
+	 */
     public void onDestroy() 
     {
     	not=0;

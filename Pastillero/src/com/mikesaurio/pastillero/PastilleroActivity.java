@@ -2,12 +2,10 @@ package com.mikesaurio.pastillero;
 
 import java.io.IOException;
 
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -20,7 +18,6 @@ import android.widget.ListView;
 
 import com.mikesaurio.pastillero.bd.DBHelper;
 import com.mikesaurio.pastillero.custom.CustomList;
-import com.mikesaurio.pastillero.dialogos.DatosDialogActivity;
 import com.mikesaurio.pastillero.fragments.DashboardFragment;
 ;
 
@@ -42,6 +39,7 @@ public class PastilleroActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		setContentView(R.layout.main_pastillero);
 
@@ -53,6 +51,7 @@ public class PastilleroActivity extends ActionBarActivity {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 		
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
@@ -66,11 +65,9 @@ public class PastilleroActivity extends ActionBarActivity {
 		this.drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		this.navList = (ListView) findViewById(R.id.left_drawer);
 
-		// Load an array of options names
 		final String[] names = getResources().getStringArray(R.array.nav_options);
 
-		// Set previous array as adapter of the list
-	//	ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, names);
+
 		adapter = new CustomList(PastilleroActivity.this,names);
 		navList.setAdapter(adapter);
 		navList.setOnItemClickListener(new DrawerItemClickListener());
@@ -120,8 +117,7 @@ public class PastilleroActivity extends ActionBarActivity {
 	
 
 
-	private class DrawerItemClickListener implements
-			ListView.OnItemClickListener {
+	private class DrawerItemClickListener implements ListView.OnItemClickListener {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
@@ -129,8 +125,12 @@ public class PastilleroActivity extends ActionBarActivity {
 		}
 	}
 	
-	
+	/**
+	 * item de la lista seleccionado
+	 * @param position
+	 */
 	private void selectItem(int position) {
+		
 		if(position==0){
 			 fragment = new DashboardFragment(PastilleroActivity.this);
 			Bundle args = new Bundle();
@@ -148,13 +148,12 @@ public class PastilleroActivity extends ActionBarActivity {
 	
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		// If the nav drawer is open, hide action items related to the content
-		// view
 		boolean drawerOpen = drawerLayout.isDrawerOpen(navList);
 		menu.findItem(R.id.action_mas).setVisible(!drawerOpen);
 		return super.onPrepareOptionsMenu(menu);
 	}
 
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		

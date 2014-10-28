@@ -5,7 +5,11 @@ import android.content.Intent;
 
 import com.mikesaurio.pastillero.servicio.servicio_alarma;
 
- 
+ /**
+  * BroadcastReceiver el cual inicia el servicio si el telefono es apagado
+  * @author mikesaurio
+  *
+  */
 public class BootCompletedIntentReceiver extends BroadcastReceiver {
  @Override
  public void onReceive(Context context, Intent intent) {
