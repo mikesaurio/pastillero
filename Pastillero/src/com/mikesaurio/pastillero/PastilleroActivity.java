@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -18,6 +19,7 @@ import android.widget.ListView;
 
 import com.mikesaurio.pastillero.bd.DBHelper;
 import com.mikesaurio.pastillero.custom.CustomList;
+import com.mikesaurio.pastillero.fragments.AcercaDeFragment;
 import com.mikesaurio.pastillero.fragments.DashboardFragment;
 ;
 
@@ -32,6 +34,7 @@ public class PastilleroActivity extends ActionBarActivity {
 	private DrawerLayout drawerLayout;
 	private ListView navList;
 	private  CustomList adapter;
+	private int position=0;
 
 	private ActionBarDrawerToggle drawerToggle;
 	private DashboardFragment fragment;
@@ -131,12 +134,24 @@ public class PastilleroActivity extends ActionBarActivity {
 	 */
 	private void selectItem(int position) {
 		
+		this.position=position;
 		if(position==0){
 			 fragment = new DashboardFragment(PastilleroActivity.this);
 			Bundle args = new Bundle();
 			fragment.setArguments(args);
 			FragmentManager fragmentManager = getSupportFragmentManager();
 			fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+			navList.setItemChecked(position, true);
+			drawerLayout.closeDrawer(navList);
+
+		}
+		if(position==1){
+			supportInvalidateOptionsMenu();
+			Fragment  fragment_ = new AcercaDeFragment(PastilleroActivity.this);
+			Bundle args = new Bundle();
+			fragment_.setArguments(args);
+			FragmentManager fragmentManager = getSupportFragmentManager();
+			fragmentManager.beginTransaction().replace(R.id.content_frame, fragment_).commit();
 			navList.setItemChecked(position, true);
 			drawerLayout.closeDrawer(navList);
 
@@ -149,6 +164,9 @@ public class PastilleroActivity extends ActionBarActivity {
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		boolean drawerOpen = drawerLayout.isDrawerOpen(navList);
+		if(position!=0){
+			drawerOpen=true;
+		}
 		menu.findItem(R.id.action_mas).setVisible(!drawerOpen);
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -159,6 +177,18 @@ public class PastilleroActivity extends ActionBarActivity {
 		
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
+	}
+
+
+	@Override
+	public void onBackPressed() {
+		if(position!=0){
+			supportInvalidateOptionsMenu();
+			selectItem(0);
+		}else{
+			super.onBackPressed();
+		}
+		
 	}
 	
 	

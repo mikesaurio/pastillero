@@ -38,5 +38,14 @@
 	<!-- Notificacion -->
 	<string name="titulo_notificacion">Tiempo de tomar:</string>
 	
+	<!-- acerca de -->
+	<string name="titulo_acerca_de">Acerca de pastillero</string>
+	<string name="yo_acerca_de">Desarrollador:</string>
+	<string name="nombre_acerca_de">Mike Morán</string>
+	<string name="licencia_acerca_de">Licencia:</string>
+	<string name="tipo_licencia_acerca_de">Apache License, Version 2.0</string>
+	
+	
+	
 	
 </resources>
