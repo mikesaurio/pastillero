@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
-
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -23,7 +23,6 @@ import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.widget.RemoteViews;
-
 import com.mikesaurio.pastillero.PastilleroActivity;
 import com.mikesaurio.pastillero.R;
 import com.mikesaurio.pastillero.bd.DBHelper;
@@ -39,7 +38,6 @@ public class servicio_alarma extends Service {
 
 	private static Timer timer[];
 	private DatosBean datosBean; 
-  	int m = 0;
     private final static int CUSTOM_VIEW = 0x04;
       NotificationManager mNotificationManager;
       private static int not=0;
@@ -56,21 +54,16 @@ public class servicio_alarma extends Service {
      * Crea un TimerTask por evento
      * @throws ParseException
      */
-    private void startService() throws ParseException
+    @SuppressLint("SimpleDateFormat")
+	private void startService() throws ParseException
     {          
     	timer = new Timer[datosBean.getId().length];
-    	m=0;
+    
+    	
+    	HiloTask[] task= new HiloTask[datosBean.getId().length];
+    	   	
     	for(int val = 0; val< timer.length ; val++){	
-    		 TimerTask task = new TimerTask() {
-     	        @Override
-     	        public void run() {
-     		          Message message = toastHandler.obtainMessage(); 
-     		          message.obj = datosBean.getNombre()[m]+"";
-     		          m+=1;
-     		          toastHandler.sendMessage(message);
-     	        }
-     	    };
-    		
+    		    
     			Calendar now = Calendar.getInstance();
     			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"); 
     			
@@ -86,11 +79,13 @@ public class servicio_alarma extends Service {
     			long diff = date2.getTime() - date1.getTime();
     			
     			long cada = TimeUnit.HOURS.toMillis(Integer.parseInt(datosBean.getFrecuencia()[val]+""));
-    		
+
     			timer[val]= new Timer();
+    			task[val]= new HiloTask(datosBean.getNombre()[val]);
+    			
+    			
     			if(diff>=0){
-    				
-    				timer[val].scheduleAtFixedRate( task, diff,cada);
+    				timer[val].scheduleAtFixedRate( task[val], diff,cada);
     			}
     			else {
     		
@@ -107,7 +102,7 @@ public class servicio_alarma extends Service {
         			Date date3 = formatter.parse(Utilerias.getDate(difs, formatter));       			
         			diff = date3.getTime() - date1.getTime();
     				
-    				timer[val].scheduleAtFixedRate( task, difs,cada);
+    				timer[val].scheduleAtFixedRate( task[val], diff,cada);
     			}
     			
     	}
@@ -157,7 +152,8 @@ public class servicio_alarma extends Service {
          
     }
 
-    private final Handler toastHandler = new Handler()
+    @SuppressLint("HandlerLeak")
+	private final Handler toastHandler = new Handler()
     {
         @Override
         public void handleMessage(Message msg)
@@ -267,6 +263,28 @@ public class servicio_alarma extends Service {
     }
 	
     
+    
+    /**
+     * timer que maneja  las notificaciones
+     * @author mikesaurio
+     *
+     */
+    public class HiloTask extends TimerTask{
+    	String titulo= getString(R.string.app_name);
+    	
+    	public HiloTask(String titulo){
+    		this.titulo=titulo;
+    	}
+    	
+		@Override
+		public void run() {
+	        	
+	        	  Message message = toastHandler.obtainMessage(); 
+ 		          message.obj = titulo;
+ 		          toastHandler.sendMessage(message);
+		}
+    	
+    }
    
 
 }

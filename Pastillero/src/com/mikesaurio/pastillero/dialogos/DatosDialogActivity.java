@@ -19,13 +19,13 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.CalendarView.OnDateChangeListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.CalendarView.OnDateChangeListener;
 
 import com.mikesaurio.pastillero.R;
 import com.mikesaurio.pastillero.utilerias.Utilerias;
@@ -81,7 +81,7 @@ public  class DatosDialogActivity extends Activity implements OnClickListener {
 			,"13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00"
 			,"21:00","22:00","23:00","24:00"};
 	
-	 String hora[] = new String[] { "","2","4","6","8","12","24","48","72"};
+	 String hora[] = new String[] { "","2","3","4","6","8","12","24","48","72"};
 
 	
 
