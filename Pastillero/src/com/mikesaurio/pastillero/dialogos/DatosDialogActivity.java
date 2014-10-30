@@ -246,7 +246,7 @@ public  class DatosDialogActivity extends Activity implements OnClickListener {
 			if(reloj_hora!= null&&cada_horas!=null&&calendario_dias!= null){
 				
 				Intent returnIntent = new Intent();
-				returnIntent.putExtra("resultado",et_nombre.getText().toString().toUpperCase()+"@"+calendario_dias+"@"+reloj_hora+"@"+cada_horas);
+				returnIntent.putExtra("resultado",et_nombre.getText().toString()+"@"+calendario_dias+"@"+reloj_hora+"@"+cada_horas);
 				setResult(OK,returnIntent);
 				finish();
 			

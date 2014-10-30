@@ -64,6 +64,8 @@
                 android:layout_margin="5dp"
                 android:background="@drawable/selector_edittext"
                 android:ems="10"
+                android:inputType="textCapCharacters"
+                 android:digits="ABCDEFGHIJKLMNÑOPQRSTUVWXYZ0123456789-_."
                 android:hint="@string/nombre_medicamento" >
 
                 <requestFocus />

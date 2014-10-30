@@ -13,7 +13,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -28,7 +27,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.mikesaurio.pastillero.R;
 import com.mikesaurio.pastillero.bd.DBHelper;
@@ -347,6 +345,9 @@ public class DashboardFragment extends Fragment  {
 		}
 		
 	}
+	
+	
+	
 
 	
 	/**
