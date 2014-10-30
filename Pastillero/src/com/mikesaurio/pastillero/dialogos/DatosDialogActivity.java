@@ -77,7 +77,7 @@ public  class DatosDialogActivity extends Activity implements OnClickListener {
 	private  String reloj2[];
 	
 	
-	 String reloj[] = new String[] {"", "1:00","2:00","3:00","4:00","5:00","6:00","7:00","8:00","9:00","10:00","11:00","12:00"
+	 String reloj[] = new String[] {"", "01:00","02:00","03:00","04:00","05:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00"
 			,"13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00"
 			,"21:00","22:00","23:00","24:00"};
 	
@@ -378,8 +378,8 @@ public  class DatosDialogActivity extends Activity implements OnClickListener {
 				for(int i=hora+1, j=1;i<reloj.length;i++,j++){
 					reloj2[j]=reloj[i]; 
 				}
-				FLAG_RELOJ=0;
-				initWheel(R.id.evento_wheel_reloj, reloj2);
+				FLAG_RELOJ=1;
+				initWheel(R.id.evento_wheel_reloj, reloj);
 		}else{
 				FLAG_RELOJ=1;
 				initWheel(R.id.evento_wheel_reloj, reloj);

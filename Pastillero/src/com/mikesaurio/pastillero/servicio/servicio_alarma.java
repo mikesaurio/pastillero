@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -22,7 +23,9 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.Log;
 import android.widget.RemoteViews;
+
 import com.mikesaurio.pastillero.PastilleroActivity;
 import com.mikesaurio.pastillero.R;
 import com.mikesaurio.pastillero.bd.DBHelper;
@@ -67,16 +70,19 @@ public class servicio_alarma extends Service {
     			Calendar now = Calendar.getInstance();
     			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"); 
     			
+    			
     			String fechaCel= now.get(Calendar.DAY_OF_MONTH)+"/"+((now.get(Calendar.MONTH))+1)+"/"+now.get(Calendar.YEAR)+
     					" "+now.get(Calendar.HOUR_OF_DAY)+":"+now.get(Calendar.MINUTE)+":"+now.get(Calendar.SECOND);
     		
     			String fechaInicio=datosBean.getFecha_inicio()[val]+" "+datosBean.getHora_inicio()[val]+":00";
     			
     			
-    			Date date1 = formatter.parse(fechaCel);  
-    			Date date2 = formatter.parse(fechaInicio);
     			
-    			long diff = date2.getTime() - date1.getTime();
+    			Date date_telefono = formatter.parse(fechaCel);  
+    			Date date_inicio = formatter.parse(fechaInicio);
+    			
+    			
+    			long diff = date_inicio.getTime() - date_telefono.getTime();
     			
     			long cada = TimeUnit.HOURS.toMillis(Integer.parseInt(datosBean.getFrecuencia()[val]+""));
 
@@ -86,22 +92,27 @@ public class servicio_alarma extends Service {
     			
     			if(diff>=0){
     				timer[val].scheduleAtFixedRate( task[val], diff,cada);
-    			}
-    			else {
-    		
-    				long diferencia =  date1.getTime()-date2.getTime();
-    				long dif = date1.getTime();
+    			}else{
+    				String fechaUnida=now.get(Calendar.DAY_OF_MONTH)+"/"+((now.get(Calendar.MONTH))+1)+"/"+now.get(Calendar.YEAR)+
+        					" "+datosBean.getHora_inicio()[val]+":00";
+    				Date date_unidas= formatter.parse(fechaUnida);
     				
-    				do{
- 
-    					dif += cada;
-    					   					
-    				}while(dif<=date1.getTime());    				
-    				long difs = dif- diferencia;
-
-        			Date date3 = formatter.parse(Utilerias.getDate(difs, formatter));       			
-        			diff = date3.getTime() - date1.getTime();
+    				long dif = date_unidas.getTime();
     				
+    				long compara = date_inicio.getTime() - date_unidas.getTime();
+    				if(compara>=0){
+	    				do{
+	    					dif += cada;   					
+	    				}while(dif<=date_telefono.getTime());   
+    				} else if(compara<0){
+	    				do{
+	    					dif -= cada;   					
+	    				}while(dif>date_telefono.getTime());  
+	    				dif += cada;
+    				}
+    				
+    				String fecha_siguiente=Utilerias.getDate(dif, formatter);
+    				diff =  formatter.parse(fecha_siguiente).getTime()-date_telefono.getTime();
     				timer[val].scheduleAtFixedRate( task[val], diff,cada);
     			}
     			
