@@ -1,6 +1,11 @@
 package com.mikesaurio.pastillero.fragments;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -8,17 +13,22 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mikesaurio.pastillero.R;
 import com.mikesaurio.pastillero.bd.DBHelper;
@@ -41,6 +51,9 @@ public class DashboardFragment extends Fragment  {
 	private AlertDialog customDialog;
 	private View view;
 	public static String id_ =null;
+	private static final int ELIMINADO = 0;
+	private static final int ONCE = 1;
+	private static final int NORMAL = 2;
 	
 	
 	/**
@@ -164,7 +177,7 @@ public class DashboardFragment extends Fragment  {
                 customDialog.dismiss();    
             }
         });
-        return (customDialog=builder.create());// return customDialog;//regresamos el di‡logo
+        return (customDialog=builder.create());
     }  
 	
 	
@@ -215,12 +228,13 @@ public class DashboardFragment extends Fragment  {
 			datosBean =	BD.getDatos(bd);
 			BD.close();
 			
-			iniciarServicio();
+
 			removeView();
 			
 			if(datosBean!=null){
 
 				iniciarDatos();
+				iniciarServicio();
 			}
 			else{
 				addView(view);
@@ -236,36 +250,100 @@ public class DashboardFragment extends Fragment  {
 	 * Inicia los objetos con la informacion de la BD
 	 */
 	public void iniciarDatos() {
-		for(int i=0;i<datosBean.getId().length;i++){
-			LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			View view =  inflater.inflate(R.layout.row_evento, null);
+		Calendar now = Calendar.getInstance();
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		String fechaCel= now.get(Calendar.DAY_OF_MONTH)+"/"+((now.get(Calendar.MONTH))+1)+"/"+now.get(Calendar.YEAR)+
+				" "+now.get(Calendar.HOUR_OF_DAY)+":"+now.get(Calendar.MINUTE)+":"+now.get(Calendar.SECOND);
 		
-			TextView evento_titulo =(TextView)view.findViewById(R.id.row_evento_titulo);
-			evento_titulo.setText(datosBean.getNombre()[i]);
+		for(int i=0;i<datosBean.getId().length;i++){
+			if(eliminaEvento(datosBean.getId()[i],datosBean.getFecha_fin()[i],fechaCel,TimeUnit.HOURS.toMillis(Integer.parseInt(datosBean.getFrecuencia()[i]+"")))==NORMAL){
 			
-			TextView tv_inicio =(TextView)view.findViewById(R.id.row_evento_tv_inicio);
-			tv_inicio.setText(datosBean.getFecha_inicio()[i]);
+				LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			final	View view =  inflater.inflate(R.layout.row_evento, null);
 			
-			TextView tv_fin =(TextView)view.findViewById(R.id.row_evento_tv_fin);
-			tv_fin.setText(datosBean.getFecha_fin()[i]);
-			
-			TextView tv_hora =(TextView)view.findViewById(R.id.row_evento_tv_hora);
-			tv_hora.setText(datosBean.getHora_inicio()[i]+" hrs");
-			
-			TextView tv_tiempo =(TextView)view.findViewById(R.id.row_evento_tv_tiempo);
-			tv_tiempo.setText(datosBean.getFrecuencia()[i]+" hrs");
-
-			view.setTag(datosBean.getId()[i]);
-			view.setOnLongClickListener(new OnLongClickListener() {
+			final	TextView evento_titulo =(TextView)view.findViewById(R.id.row_evento_titulo);
+				evento_titulo.setText(datosBean.getNombre()[i]);
 				
-				@Override
-				public boolean onLongClick(View v) {
+				final TextView tv_inicio =(TextView)view.findViewById(R.id.row_evento_tv_inicio);
+				tv_inicio.setText(datosBean.getFecha_inicio()[i]);
+				
+				final TextView tv_fin =(TextView)view.findViewById(R.id.row_evento_tv_fin);
+				tv_fin.setText(datosBean.getFecha_fin()[i]);
+				
+				final TextView tv_hora =(TextView)view.findViewById(R.id.row_evento_tv_hora);
+				tv_hora.setText(datosBean.getHora_inicio()[i]+" hrs");
+				
+				final TextView tv_tiempo =(TextView)view.findViewById(R.id.row_evento_tv_tiempo);
+				tv_tiempo.setText(datosBean.getFrecuencia()[i]+" hrs");
+	
+				view.setTag(datosBean.getId()[i]);
+				view.setOnLongClickListener(new OnLongClickListener() {
+					
+					@Override
+					public boolean onLongClick(View v) {
+	
+						showDialogEdit(v.getTag()+"").show();
+						return false;
+					}
+				});
+				view.setOnTouchListener(new OnTouchListener() {
 
-					showDialogEdit(v.getTag()+"").show();
-					return false;
-				}
-			});
-			addView(view);
+				    @Override
+				    public boolean onTouch(View v, MotionEvent event) {
+				    	TransitionDrawable transition = (TransitionDrawable) v.getBackground();
+				        switch(event.getAction()) {
+
+				        case MotionEvent.ACTION_DOWN:
+				        	transition.startTransition(1000);
+				        	evento_titulo.setBackgroundColor(getResources().getColor(R.color.color_blanco));
+				        	evento_titulo.setTextColor(getResources().getColor(R.color.color_base));
+				        	tv_inicio.setTextColor(getResources().getColor(R.color.color_blanco));
+				        	tv_fin.setTextColor(getResources().getColor(R.color.color_blanco));
+				        	tv_hora.setTextColor(getResources().getColor(R.color.color_blanco));
+				        	tv_tiempo.setTextColor(getResources().getColor(R.color.color_blanco));
+				        	((TextView)view.findViewById(R.id.row_evento_tv_inicio_base)).setTextColor(getResources().getColor(R.color.color_blanco));
+				        	((TextView)view.findViewById(R.id.row_evento_tv_fin_base)).setTextColor(getResources().getColor(R.color.color_blanco));
+				        	((TextView)view.findViewById(R.id.row_evento_tv_hora_base)).setTextColor(getResources().getColor(R.color.color_blanco));
+				        	((TextView)view.findViewById(R.id.row_evento_tv_tiempo_base)).setTextColor(getResources().getColor(R.color.color_blanco));
+				        	return false;
+
+				        case MotionEvent.ACTION_UP:			        	
+				        	transition.reverseTransition(1000); 
+				        	evento_titulo.setBackgroundColor(getResources().getColor(R.color.color_base));
+				        	evento_titulo.setTextColor(getResources().getColor(R.color.color_blanco));
+				        	tv_inicio.setTextColor(getResources().getColor(R.color.color_negro));
+				        	tv_fin.setTextColor(getResources().getColor(R.color.color_negro));
+				        	tv_hora.setTextColor(getResources().getColor(R.color.color_negro));
+				        	tv_tiempo.setTextColor(getResources().getColor(R.color.color_negro));
+				        	((TextView)view.findViewById(R.id.row_evento_tv_inicio_base)).setTextColor(getResources().getColor(R.color.color_negro));
+				        	((TextView)view.findViewById(R.id.row_evento_tv_fin_base)).setTextColor(getResources().getColor(R.color.color_negro));
+				        	((TextView)view.findViewById(R.id.row_evento_tv_hora_base)).setTextColor(getResources().getColor(R.color.color_negro));
+				        	((TextView)view.findViewById(R.id.row_evento_tv_tiempo_base)).setTextColor(getResources().getColor(R.color.color_negro));
+				        	return false;
+				        	
+				        case MotionEvent.ACTION_CANCEL:			        	
+				        	transition.reverseTransition(1000); 
+				        	evento_titulo.setBackgroundColor(getResources().getColor(R.color.color_base));
+				        	evento_titulo.setTextColor(getResources().getColor(R.color.color_blanco));
+				        	tv_inicio.setTextColor(getResources().getColor(R.color.color_negro));
+				        	tv_fin.setTextColor(getResources().getColor(R.color.color_negro));
+				        	tv_hora.setTextColor(getResources().getColor(R.color.color_negro));
+				        	tv_tiempo.setTextColor(getResources().getColor(R.color.color_negro));
+				        	((TextView)view.findViewById(R.id.row_evento_tv_inicio_base)).setTextColor(getResources().getColor(R.color.color_negro));
+				        	((TextView)view.findViewById(R.id.row_evento_tv_fin_base)).setTextColor(getResources().getColor(R.color.color_negro));
+				        	((TextView)view.findViewById(R.id.row_evento_tv_hora_base)).setTextColor(getResources().getColor(R.color.color_negro));
+				        	((TextView)view.findViewById(R.id.row_evento_tv_tiempo_base)).setTextColor(getResources().getColor(R.color.color_negro));
+				        	return false;
+				        	
+				            
+				        }
+
+				        return true;
+				    }
+
+				});
+				addView(view);
+			}
 		}
 		
 	}
@@ -314,5 +392,27 @@ public class DashboardFragment extends Fragment  {
 	
 	/*******************************************************Termina Metodo de interaccion con la Base de datos*****************************************/	
 	
-
+	/**
+     * valida y elimina los eventos caducos
+     * @param id
+     * @param fecha_fin
+     * @param fecha_cel
+     * @param intervalo
+     * @return
+     */
+    public int eliminaEvento(String id,String fecha_fin,String fecha_cel,long intervalo){
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		try {
+			Date	date_telefono = formatter.parse(fecha_cel);
+			Date date_fin = formatter.parse(fecha_fin+" "+"24:00:00");
+			
+			if( date_telefono.getTime()>date_fin.getTime()){
+				borrarEvento(id);
+	    		return ELIMINADO;
+	    	}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return NORMAL;
+    }
 }

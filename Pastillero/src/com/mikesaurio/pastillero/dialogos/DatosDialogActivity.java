@@ -246,7 +246,7 @@ public  class DatosDialogActivity extends Activity implements OnClickListener {
 			if(reloj_hora!= null&&cada_horas!=null&&calendario_dias!= null){
 				
 				Intent returnIntent = new Intent();
-				returnIntent.putExtra("resultado",et_nombre.getText().toString()+"@"+calendario_dias+"@"+reloj_hora+"@"+cada_horas);
+				returnIntent.putExtra("resultado",et_nombre.getText().toString().toUpperCase()+"@"+calendario_dias+"@"+reloj_hora+"@"+cada_horas);
 				setResult(OK,returnIntent);
 				finish();
 			
@@ -378,8 +378,8 @@ public  class DatosDialogActivity extends Activity implements OnClickListener {
 				for(int i=hora+1, j=1;i<reloj.length;i++,j++){
 					reloj2[j]=reloj[i]; 
 				}
-				FLAG_RELOJ=1;
-				initWheel(R.id.evento_wheel_reloj, reloj);
+				FLAG_RELOJ=0;
+				initWheel(R.id.evento_wheel_reloj, reloj2);
 		}else{
 				FLAG_RELOJ=1;
 				initWheel(R.id.evento_wheel_reloj, reloj);

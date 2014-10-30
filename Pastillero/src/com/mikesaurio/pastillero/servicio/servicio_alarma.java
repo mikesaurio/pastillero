@@ -23,7 +23,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.mikesaurio.pastillero.PastilleroActivity;
@@ -42,6 +41,9 @@ public class servicio_alarma extends Service {
 	private static Timer timer[];
 	private DatosBean datosBean; 
     private final static int CUSTOM_VIEW = 0x04;
+	private static final int ELIMINADO = 0;
+	private static final int ONCE = 1;
+	private static final int NORMAL = 2;
       NotificationManager mNotificationManager;
       private static int not=0;
 	
@@ -61,22 +63,22 @@ public class servicio_alarma extends Service {
 	private void startService() throws ParseException
     {          
     	timer = new Timer[datosBean.getId().length];
-    
-    	
     	HiloTask[] task= new HiloTask[datosBean.getId().length];
+    	
+    	Calendar now = Calendar.getInstance();
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    	String fechaCel= now.get(Calendar.DAY_OF_MONTH)+"/"+((now.get(Calendar.MONTH))+1)+"/"+now.get(Calendar.YEAR)+
+				" "+now.get(Calendar.HOUR_OF_DAY)+":"+now.get(Calendar.MINUTE)+":"+now.get(Calendar.SECOND);
     	   	
+    	
     	for(int val = 0; val< timer.length ; val++){	
     		    
-    			Calendar now = Calendar.getInstance();
-    			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"); 
+    			 
     			
     			
-    			String fechaCel= now.get(Calendar.DAY_OF_MONTH)+"/"+((now.get(Calendar.MONTH))+1)+"/"+now.get(Calendar.YEAR)+
-    					" "+now.get(Calendar.HOUR_OF_DAY)+":"+now.get(Calendar.MINUTE)+":"+now.get(Calendar.SECOND);
+    			
     		
     			String fechaInicio=datosBean.getFecha_inicio()[val]+" "+datosBean.getHora_inicio()[val]+":00";
-    			
-    			
     			
     			Date date_telefono = formatter.parse(fechaCel);  
     			Date date_inicio = formatter.parse(fechaInicio);
@@ -84,14 +86,15 @@ public class servicio_alarma extends Service {
     			
     			long diff = date_inicio.getTime() - date_telefono.getTime();
     			
-    			long cada = TimeUnit.HOURS.toMillis(Integer.parseInt(datosBean.getFrecuencia()[val]+""));
+    			long intervalo_alarma = TimeUnit.HOURS.toMillis(Integer.parseInt(datosBean.getFrecuencia()[val]+""));
 
     			timer[val]= new Timer();
-    			task[val]= new HiloTask(datosBean.getNombre()[val]);
+    			task[val]= new HiloTask(datosBean.getNombre()[val], datosBean.getId()[val],
+    					datosBean.getFecha_fin()[val], fechaCel, intervalo_alarma);
     			
     			
     			if(diff>=0){
-    				timer[val].scheduleAtFixedRate( task[val], diff,cada);
+    				timer[val].scheduleAtFixedRate( task[val], diff,intervalo_alarma);
     			}else{
     				String fechaUnida=now.get(Calendar.DAY_OF_MONTH)+"/"+((now.get(Calendar.MONTH))+1)+"/"+now.get(Calendar.YEAR)+
         					" "+datosBean.getHora_inicio()[val]+":00";
@@ -102,18 +105,18 @@ public class servicio_alarma extends Service {
     				long compara = date_inicio.getTime() - date_unidas.getTime();
     				if(compara>=0){
 	    				do{
-	    					dif += cada;   					
+	    					dif += intervalo_alarma;   					
 	    				}while(dif<=date_telefono.getTime());   
     				} else if(compara<0){
 	    				do{
-	    					dif -= cada;   					
+	    					dif -= intervalo_alarma;   					
 	    				}while(dif>date_telefono.getTime());  
-	    				dif += cada;
+	    				dif += intervalo_alarma;
     				}
     				
     				String fecha_siguiente=Utilerias.getDate(dif, formatter);
     				diff =  formatter.parse(fecha_siguiente).getTime()-date_telefono.getTime();
-    				timer[val].scheduleAtFixedRate( task[val], diff,cada);
+    				timer[val].scheduleAtFixedRate( task[val], diff,intervalo_alarma);
     			}
     			
     	}
@@ -282,20 +285,93 @@ public class servicio_alarma extends Service {
      */
     public class HiloTask extends TimerTask{
     	String titulo= getString(R.string.app_name);
+		private String id;
+		private String fecha_fin;
+		private String fecha_cel;
+		private long intervalo;
     	
-    	public HiloTask(String titulo){
+    	/**
+    	 * construtor
+    	 * @param titulo
+    	 * @param id
+    	 * @param fecha_fin
+    	 * @param fecha_cel
+    	 * @param intervalo
+    	 */
+    	public HiloTask(String titulo,String id,String fecha_fin,String fecha_cel,long intervalo){
     		this.titulo=titulo;
+    		this.id=id;
+    		this.fecha_fin=fecha_fin;
+    		this.fecha_cel=fecha_cel;
+    		this.intervalo=intervalo;
     	}
     	
 		@Override
 		public void run() {
-	        	
-	        	  Message message = toastHandler.obtainMessage(); 
- 		          message.obj = titulo;
- 		          toastHandler.sendMessage(message);
+			int respuesta=eliminaEvento(id, fecha_fin, fecha_cel, intervalo);
+	        	if(respuesta==NORMAL){
+		        	  Message message = toastHandler.obtainMessage(); 
+	 		          message.obj = titulo;
+	 		          toastHandler.sendMessage(message);
+	        	}else if(respuesta==ONCE){
+	        		 Message message = toastHandler.obtainMessage(); 
+	 		         message.obj = titulo;
+	 		         toastHandler.sendMessage(message);
+	 		         borrarEvento(id);
+	        	}
 		}
     	
     }
    
+    /**
+     * valida y elimina los eventos caducos
+     * @param id
+     * @param fecha_fin
+     * @param fecha_cel
+     * @param intervalo
+     * @return
+     */
+    public int eliminaEvento(String id,String fecha_fin,String fecha_cel,long intervalo){
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		try {
+			Date	date_telefono = formatter.parse(fecha_cel);
+			Date date_fin = formatter.parse(fecha_fin+" "+"24:00:00");
+			
+			long actualMasUnCiclo = date_telefono.getTime()+intervalo;
+			
+			
+			if( date_telefono.getTime()>date_fin.getTime()){
+				borrarEvento(id);
+	    		return ELIMINADO;
+	    	}else if(actualMasUnCiclo>date_fin.getTime()){//la hora actual mas un ciclo es menor que el final
+	    		return ONCE;
+	    	}
+		
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}  
+
+		
+    
+		return NORMAL;
+    	
+    }
+    
+    /**
+	 * Elimina un eevnto en especifico
+	 * @param id
+	 */
+	public void borrarEvento(String id) {
+		
+		try {
+			DBHelper	BD = new DBHelper(this);
+			SQLiteDatabase bd = BD.loadDataBase(BD);
+			BD.borrarDato(bd,id);
+			BD.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
 
 }
