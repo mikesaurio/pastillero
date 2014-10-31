@@ -35,6 +35,7 @@ import com.mikesaurio.pastillero.bean.DatosBean;
 import com.mikesaurio.pastillero.dialogos.CitasDialogActivity;
 import com.mikesaurio.pastillero.dialogos.DatosDialogActivity;
 import com.mikesaurio.pastillero.servicio.servicio_alarma;
+import com.mikesaurio.pastillero.servicio.servicio_citas;
 import com.mikesaurio.pastillero.utilerias.Utilerias;
 
 /**
@@ -177,7 +178,7 @@ public class CitasFragment extends Fragment  {
 			if(citasBean!=null){
 
 				iniciarDatos();
-				//iniciarServicio();
+				iniciarServicio();
 			}
 			else{
 				addView(view);
@@ -402,8 +403,8 @@ public class CitasFragment extends Fragment  {
 	 * Termina e inicia el servicio de nuevo
 	 */
 	public void iniciarServicio(){
-		activity.stopService(new Intent(activity, servicio_alarma.class));
-		activity.startService(new Intent(activity, servicio_alarma.class));
+		activity.stopService(new Intent(activity, servicio_citas.class));
+		activity.startService(new Intent(activity, servicio_citas.class));
 	}
 	
 }
