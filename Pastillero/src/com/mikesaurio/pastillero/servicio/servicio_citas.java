@@ -246,7 +246,7 @@ public class servicio_citas extends Service {
         not+=1;
 
         RemoteViews expandedView = new RemoteViews(this.getPackageName(), R.layout.notification_custom);
-        expandedView.setTextViewText(R.id.notificacion_custom_tv_titulo,getString(R.string.titulo_notificacion)+" "+ titulo);
+        expandedView.setTextViewText(R.id.notificacion_custom_tv_titulo,getString(R.string.titulo_notificacion_)+" "+ titulo);
 
         Notification notification = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_launcher)

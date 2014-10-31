@@ -36,6 +36,7 @@
 
     <!-- Notificacion -->
     <string name="titulo_notificacion">Tiempo de tomar:</string>
+     <string name="titulo_notificacion_">Tiempo de cita:</string>
 
     <!-- acerca de -->
     <string name="titulo_acerca_de">Acerca de pastillero</string>
