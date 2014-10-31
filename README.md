@@ -1,4 +1,4 @@
-![alt tag](https://github.com/mikesaurio/pastillero/master/Pastillero/res/drawable-hdpi/ic_launcher.png?raw=true) TRAXI
+![alt tag](https://raw.githubusercontent.com/mikesaurio/pastillero/master/Pastillero/res/drawable-hdpi/ic_launcher.png?raw=true) PASTILLERO
 ============
 
 App que te recuerda cuando debes tomar tu medicamento y tus citas al medico.
