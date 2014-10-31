@@ -54,5 +54,3 @@ Estamos en pruebas ALFA
 # Dudas
 
     @yosoymikesaurio
-    miguel.moran@codigo.labplc.mx
-    http://www.traxi.mx
