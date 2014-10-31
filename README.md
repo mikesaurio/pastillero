@@ -17,13 +17,6 @@ Para una recordatorio de medicamento debes indicar:
                 
 
 
-# Tips:
-
-Traxi te da consejos de seguridad y para un buen uso de los taxis del DF.
-
-
-
-
 # Idiomas
 
 La aplicación tiene soporte para idiomas español e ingles.
