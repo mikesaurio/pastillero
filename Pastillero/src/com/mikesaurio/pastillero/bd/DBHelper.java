@@ -13,6 +13,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.mikesaurio.pastillero.bean.CitasBean;
 import com.mikesaurio.pastillero.bean.DatosBean;
 
 /**
@@ -246,6 +247,79 @@ public class DBHelper extends SQLiteOpenHelper {
 					bd.execSQL(cons);
 				}catch(Exception e){
 				}
+		
+	}
+
+
+	public CitasBean getDatosCitas(SQLiteDatabase bd) {
+		CitasBean bean = null;
+		
+		Cursor c = null;
+        c = bd.rawQuery("select * from citas", null);
+    	
+        if(c!=null&&c.getCount()>0){
+        	bean = new CitasBean();
+        	
+        	 String[] id= new String[c.getCount()];
+	         String[] nombre = new String[c.getCount()];
+	    	 String[] fecha= new String[c.getCount()];
+	    	 String[] hora= new String[c.getCount()];
+        
+	        c.moveToFirst();
+	        int i =0;
+	        while (!c.isAfterLast()){
+	        	id[i]=(c.getString(c.getColumnIndex("id")));
+	        	nombre[i]=(c.getString(c.getColumnIndex("nombre")));
+	        	fecha[i]=(c.getString(c.getColumnIndex("fecha")));
+	        	hora[i]=(c.getString(c.getColumnIndex("hora")));
+	        	c.moveToNext();
+	        	i+=1;
+	        }
+	        if(i>0){
+	        	bean.setId(id);
+	        	bean.setNombre(nombre);
+	        	bean.setFecha(fecha);
+	        	bean.setHora(hora);
+	        	
+	        	
+	        }
+        }
+        c.close();
+        
+		return bean;
+	}
+
+
+	public void updateCitas(SQLiteDatabase bd, String[] valores, String id) {
+		try{
+			String cons="UPDATE  citas set nombre = '"+valores[0]+"',fecha = '"+valores[1]+"',hora = '"+valores[2]+
+					"' WHERE id = "+ id;
+			bd.execSQL(cons);
+		}catch(Exception e){
+		}
+		
+	}
+
+
+	public void setCitas(SQLiteDatabase bd, String[] valores) {
+		try{
+			String cons="insert into citas (nombre,fecha,hora)"
+					+ " values"
+					+ " ('"+valores[0]+"','"+valores[1]+"','"+valores[2]+"');";
+			
+			bd.execSQL(cons);
+		}catch(Exception e){
+		}
+		
+		
+	}
+
+
+	public void borrarCita(SQLiteDatabase bd, String id) {
+		try{
+			bd.execSQL("delete from citas where id = "+ id);
+		}catch(Exception e){
+		}
 		
 	}
 	

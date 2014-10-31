@@ -2,19 +2,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/marco_boton"
-    tools:context="com.mikesaurio.pastillero.fragments.DashboardFragment" >
+    android:background="@color/color_negro"
+    android:paddingTop="5dp"
+    tools:context="com.mikesaurio.pastillero.fragments.MedicinasFragment" >
 
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/citas_sv_eventos"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:orientation="vertical"
-        android:padding="10dp" >
+        android:background="@drawable/marco_boton"
+        android:overScrollMode="never">
 
+        <LinearLayout
+            android:id="@+id/citas_ll_eventos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" 
+            android:gravity="center">
 
- 
-    </LinearLayout>
+           
+        </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>

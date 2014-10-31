@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/color_negro"
     android:paddingTop="5dp"
-    tools:context="com.mikesaurio.pastillero.fragments.DashboardFragment" >
+    tools:context="com.mikesaurio.pastillero.fragments.MedicinasFragment" >
 
     <ScrollView
         android:id="@+id/capsule_time_sv_eventos"

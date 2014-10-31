@@ -41,7 +41,7 @@ import com.mikesaurio.pastillero.utilerias.Utilerias;
  * @author mikesaurio
  * 
  */
-public class DashboardFragment extends Fragment  {
+public class MedicinasFragment extends Fragment  {
 
 	LinearLayout ll_eventos;
 	Activity activity;
@@ -58,7 +58,7 @@ public class DashboardFragment extends Fragment  {
 	 * Constructor
 	 * @param activity
 	 */
-	public DashboardFragment(Activity activity){
+	public MedicinasFragment(Activity activity){
 		this.activity=activity;
 	}
 	
@@ -74,6 +74,7 @@ public class DashboardFragment extends Fragment  {
 		
 		 view = inflater.inflate(R.layout.row_default_pastillero, container,false);
 		 TextView tv_rowdefault = (TextView)view.findViewById(R.id.tv_rowdefault);
+		 tv_rowdefault.setText(getResources().getString(R.string.sin_eventos_medicina));
 		 tv_rowdefault.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,(Utilerias.getTamanoPantalla(activity).y/2)-Utilerias.getTamanoActionBar(activity)));
 		
 		cargarDatos();

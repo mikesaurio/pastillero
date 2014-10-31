@@ -21,7 +21,7 @@ import com.mikesaurio.pastillero.bd.DBHelper;
 import com.mikesaurio.pastillero.custom.CustomList;
 import com.mikesaurio.pastillero.fragments.AcercaDeFragment;
 import com.mikesaurio.pastillero.fragments.CitasFragment;
-import com.mikesaurio.pastillero.fragments.DashboardFragment;
+import com.mikesaurio.pastillero.fragments.MedicinasFragment;
 ;
 
 
@@ -38,7 +38,8 @@ public class PastilleroActivity extends ActionBarActivity {
 	private int position=0;
 
 	private ActionBarDrawerToggle drawerToggle;
-	private DashboardFragment fragment;
+	private MedicinasFragment fragment;
+	private CitasFragment fragment_s;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +114,11 @@ public class PastilleroActivity extends ActionBarActivity {
 		}
 		 switch (item.getItemId()){
 		 case R.id.action_mas:
-			 fragment.setMensaje();
+			 if(position==0){
+				 fragment.setMensaje();
+			 }else if(position==1){
+				 fragment_s.setMensaje();
+			 }
 	      return true;
 		 }
 		
@@ -139,7 +144,7 @@ public class PastilleroActivity extends ActionBarActivity {
 		
 		this.position=position;
 		if(position==0){
-			 fragment = new DashboardFragment(PastilleroActivity.this);
+			 fragment = new MedicinasFragment(PastilleroActivity.this);
 			Bundle args = new Bundle();
 			fragment.setArguments(args);
 			FragmentManager fragmentManager = getSupportFragmentManager();
@@ -150,7 +155,7 @@ public class PastilleroActivity extends ActionBarActivity {
 		}
 		if(position==1){
 			supportInvalidateOptionsMenu();
-			Fragment  fragment_s = new CitasFragment(PastilleroActivity.this);
+			  fragment_s = new CitasFragment(PastilleroActivity.this);
 			Bundle args = new Bundle();
 			fragment_s.setArguments(args);
 			FragmentManager fragmentManager = getSupportFragmentManager();
@@ -178,8 +183,8 @@ public class PastilleroActivity extends ActionBarActivity {
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		boolean drawerOpen = drawerLayout.isDrawerOpen(navList);
-		if(position!=0){
-			drawerOpen=true;
+		if(position!=2){
+			drawerOpen=false;
 		}
 		menu.findItem(R.id.action_mas).setVisible(!drawerOpen);
 		return super.onPrepareOptionsMenu(menu);

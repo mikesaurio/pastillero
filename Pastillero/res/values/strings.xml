@@ -4,48 +4,54 @@
     <string name="app_name">Pastillero</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    
+
     <!-- actividad principal -->
     <string name="agregar_evento">Agregar medicamento</string>
-    
-    
-    
+
     <!-- dialogo add -->
     <string name="nombre_medicamento">Nombre del medicamento</string>
-	<string name="que_dias">¿Qué días vas a tomarlo?</string>
-	<string name="a_que_hora">¿Cada cuántas horas?</string>
-	<string name="hora_inicio">¿A qué hora iniciamos?</string>
-	<string name="aceptar">Aceptar</string>
-	<string name="terminar">Terminar</string>
-	<string name="nuevo_medicamento">Medicamento</string>
-	<string name="fecha_inicio">Fecha inicio:</string>
-	<string name="fecha_fin">Fecha fin: </string>
-	<string name="titulo_calendario">Calendario</string>
-	<string name="titulo_hora">Hora</string>
-	<string name="titulo_tiempo">Tiempo</string>
-	<string name="llenar_nombre">Debes poner el nombre del medicamento</string>
-	<string name="llenar_todo">Debes llenar todos los datos</string>
-	<string name="fecha_incorrecta">La fecha de fin no puede ser menor a la de inicio</string>
-	
-	<!-- dialogo borrar editar -->
-	<string name="dialogo_editar">Editar</string>
-	<string name="dialogo_borrar">Borrar</string>
-	<string name="dialogo_texto">¿Qué deseas hacer?</string>
-	
-	<!-- fragment principal -->
-	<string name="sin_eventos">No tienes recordatorios</string>
-	
-	<!-- Notificacion -->
-	<string name="titulo_notificacion">Tiempo de tomar:</string>
-	
-	<!-- acerca de -->
-	<string name="titulo_acerca_de">Acerca de pastillero</string>
-	<string name="yo_acerca_de">Desarrollador:</string>
-	<string name="nombre_acerca_de">Mike Morán</string>
-	<string name="licencia_acerca_de">Licencia:</string>
-	<string name="tipo_licencia_acerca_de">Apache License, Version 2.0</string>
-	
-	
-	
-	
+    <string name="que_dias">¿Qué días vas a tomarlo?</string>
+    <string name="a_que_hora">¿Cada cuántas horas?</string>
+    <string name="hora_inicio">¿A qué hora iniciamos?</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="terminar">Terminar</string>
+    <string name="nuevo_medicamento">Medicamento</string>
+    <string name="fecha_inicio">Fecha inicio:</string>
+    <string name="fecha_fin">Fecha fin: </string>
+    <string name="titulo_calendario">Calendario</string>
+    <string name="titulo_hora">Hora</string>
+    <string name="titulo_tiempo">Tiempo</string>
+    <string name="llenar_nombre">Debes poner el nombre del medicamento</string>
+    <string name="llenar_todo">Debes llenar todos los datos</string>
+    <string name="fecha_incorrecta">La fecha de fin no puede ser menor a la de inicio</string>
+
+    <!-- dialogo borrar editar -->
+    <string name="dialogo_editar">Editar</string>
+    <string name="dialogo_borrar">Borrar</string>
+    <string name="dialogo_texto">¿Qué deseas hacer?</string>
+
+    <!-- fragment principal -->
+    <string name="sin_eventos_medicina">No tienes medicamentos</string>
+    <string name="sin_eventos_citas">No tienes citas</string>
+
+    <!-- Notificacion -->
+    <string name="titulo_notificacion">Tiempo de tomar:</string>
+
+    <!-- acerca de -->
+    <string name="titulo_acerca_de">Acerca de pastillero</string>
+    <string name="yo_acerca_de">Desarrollador:</string>
+    <string name="nombre_acerca_de">Mike Morán</string>
+    <string name="licencia_acerca_de">Licencia:</string>
+    <string name="tipo_licencia_acerca_de">Apache License, Version 2.0</string>
+    <string name="title_activity_citas_dialog">CitasDialogActivity</string>
+
+    <!-- Citas dialogo -->
+    <string name="agregar_evento_citas">Agregar cita</string>
+    <string name="nombre_cita">Nombre de la cita</string>
+    <string name="que_dia_es_la_cita">¿Qué días es la cita?</string>
+    <string name="hora_cita">¿A qué hora es la cita?</string>
+       <string name="llenar_nombre_citas">Debes poner el nombre de la cita</string>
+           <string name="fecha_cita_">Fecha: </string>
+    <string name="hora_cita_">Hora: </string>
+
 </resources>

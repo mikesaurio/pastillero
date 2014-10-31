@@ -17,7 +17,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.mikesaurio.pastillero.splash.SplashActivity"
+            android:name=".splash.SplashActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" >
             <intent-filter>
@@ -27,21 +27,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.mikesaurio.pastillero.PastilleroActivity"
+            android:name=".PastilleroActivity"
             android:label="@string/app_name"
             android:theme="@style/ActionBarCustomeStyle" >
         </activity>
         <activity
-            android:name="com.mikesaurio.pastillero.fragments.DashboardFragment"
+            android:name=".fragments.MedicinasFragment"
             android:label="@string/app_name" />
         <activity
-            android:name="com.mikesaurio.pastillero.dialogos.DatosDialogActivity"
+            android:name=".dialogos.DatosDialogActivity"
             android:theme="@android:style/Theme.Holo.Light.Dialog"
             android:windowSoftInputMode="stateAlwaysVisible" >
         </activity>
 
         <receiver
-            android:name="com.mikesaurio.pastillero.broadcast.BootCompletedIntentReceiver"
+            android:name=".broadcast.BootCompletedIntentReceiver"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED" >
@@ -53,10 +53,16 @@
         </receiver>
 
         <service
-            android:name="com.mikesaurio.pastillero.servicio.servicio_alarma"
+            android:name=".servicio.servicio_alarma"
             android:enabled="true"
             android:exported="true" >
         </service>
+
+        <activity
+            android:name="com.mikesaurio.pastillero.dialogos.CitasDialogActivity"
+            android:theme="@android:style/Theme.Holo.Light.Dialog"
+            android:windowSoftInputMode="stateAlwaysVisible" >
+        </activity>
     </application>
 
 </manifest>
