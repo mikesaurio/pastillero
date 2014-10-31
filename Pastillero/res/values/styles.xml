@@ -17,9 +17,9 @@
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-        <item name="android:selectableItemBackground">@null</item>
-        <item name="android:actionBarItemBackground">@null</item>
-        <item name="actionBarItemBackground">@null</item>
+ 	<item name="android:selectableItemBackground">@null</item>
+    <item name="android:actionBarItemBackground">@null</item>
+    <item name="actionBarItemBackground">@null</item>
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
     
@@ -28,4 +28,13 @@
     <style name="DialogStyle" parent="@android:style/Theme.Black.NoTitleBar.Fullscreen">
     <item name="android:windowFullscreen">false</item>
 </style>
+
+    <style name="ActionBarCustomeStyle" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+    <!-- mikesaurio -->
+            <item name="android:actionBarItemBackground">@null</item>
+    		<item name="actionBarItemBackground">@null</item>
+</style>
+
+
+    
 </resources>

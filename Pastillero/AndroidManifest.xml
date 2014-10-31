@@ -29,7 +29,7 @@
         <activity
             android:name="com.mikesaurio.pastillero.PastilleroActivity"
             android:label="@string/app_name"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" >
+            android:theme="@style/ActionBarCustomeStyle" >
         </activity>
         <activity
             android:name="com.mikesaurio.pastillero.fragments.DashboardFragment"

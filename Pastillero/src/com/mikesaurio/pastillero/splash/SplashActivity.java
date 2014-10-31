@@ -23,7 +23,7 @@ import com.mikesaurio.pastillero.utilerias.Utilerias;
  */
 public class SplashActivity extends Activity {
 
-	private static final long SPLASH_SCREEN_DELAY = 2000; //tiempo que dura el splash
+	private static final long SPLASH_SCREEN_DELAY = 1000; //tiempo que dura el splash
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

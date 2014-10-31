@@ -63,6 +63,7 @@ public class PastilleroActivity extends ActionBarActivity {
 		getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.marco_negro));
 		LayoutInflater mInflater = LayoutInflater.from(this);
 		getSupportActionBar().setDisplayShowCustomEnabled(true);
+		this.setTheme(R.style.AppTheme);
 		
 		
 		this.drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -82,8 +83,9 @@ public class PastilleroActivity extends ActionBarActivity {
 				supportInvalidateOptionsMenu();
 			}
 		};
-
+		
 		drawerLayout.setDrawerListener(drawerToggle);
+		
 		
 		selectItem(0);
 
