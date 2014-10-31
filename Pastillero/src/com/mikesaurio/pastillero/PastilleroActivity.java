@@ -20,6 +20,7 @@ import android.widget.ListView;
 import com.mikesaurio.pastillero.bd.DBHelper;
 import com.mikesaurio.pastillero.custom.CustomList;
 import com.mikesaurio.pastillero.fragments.AcercaDeFragment;
+import com.mikesaurio.pastillero.fragments.CitasFragment;
 import com.mikesaurio.pastillero.fragments.DashboardFragment;
 ;
 
@@ -148,6 +149,17 @@ public class PastilleroActivity extends ActionBarActivity {
 
 		}
 		if(position==1){
+			supportInvalidateOptionsMenu();
+			Fragment  fragment_s = new CitasFragment(PastilleroActivity.this);
+			Bundle args = new Bundle();
+			fragment_s.setArguments(args);
+			FragmentManager fragmentManager = getSupportFragmentManager();
+			fragmentManager.beginTransaction().replace(R.id.content_frame, fragment_s).commit();
+			navList.setItemChecked(position, true);
+			drawerLayout.closeDrawer(navList);
+
+		}
+		if(position==2){
 			supportInvalidateOptionsMenu();
 			Fragment  fragment_ = new AcercaDeFragment(PastilleroActivity.this);
 			Bundle args = new Bundle();

@@ -158,7 +158,8 @@ public class servicio_alarma extends Service {
     	not=0;
     	if(timer!=null){
 	    	for(int val=0;val<timer.length;val++)	{	
-	    		timer[0].cancel();
+	    		timer[val].cancel();
+	    		timer[val]=null;
 	    	}
     	}
     	datosBean = null;
