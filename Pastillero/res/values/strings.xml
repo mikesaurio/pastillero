@@ -54,5 +54,11 @@
        <string name="llenar_nombre_citas">Debes poner el nombre de la cita</string>
            <string name="fecha_cita_">Fecha: </string>
     <string name="hora_cita_">Hora: </string>
+    
+    <!-- Compartir -->
+     <string name="compartir_uno">Estoy tomando:</string>
+     <string name="compartir_dos">del día:</string>
+     <string name="compartir_tres">al día:</string>
+     <string name="compartir_cuatro">cada: </string>
 
 </resources>

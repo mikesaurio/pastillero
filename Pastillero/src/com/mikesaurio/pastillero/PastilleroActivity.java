@@ -132,7 +132,11 @@ public class PastilleroActivity extends ActionBarActivity {
 
 	
 
-
+/**
+ * Clase que implementa escucha a la lista
+ * @author mikesaurio
+ *
+ */
 	private class DrawerItemClickListener implements ListView.OnItemClickListener {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,

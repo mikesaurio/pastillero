@@ -14,17 +14,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.TransitionDrawable;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -52,6 +56,8 @@ public class MedicinasFragment extends Fragment  {
 	private static final int ELIMINADO = 0;
 	private static final int ONCE = 1;
 	private static final int NORMAL = 2;
+	private boolean[] clicks;
+	String linearLongClick= null;
 	
 	
 	/**
@@ -253,39 +259,70 @@ public class MedicinasFragment extends Fragment  {
 	 * Inicia los objetos con la informacion de la BD
 	 */
 	public void iniciarDatos() {
+		
 		Calendar now = Calendar.getInstance();
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		String fechaCel= now.get(Calendar.DAY_OF_MONTH)+"/"+((now.get(Calendar.MONTH))+1)+"/"+now.get(Calendar.YEAR)+
 				" "+now.get(Calendar.HOUR_OF_DAY)+":"+now.get(Calendar.MINUTE)+":"+now.get(Calendar.SECOND);
 		
+		clicks= new boolean[datosBean.getId().length];
+	
+		
 		for(int i=0;i<datosBean.getId().length;i++){
 			if(eliminaEvento(datosBean.getId()[i],datosBean.getFecha_fin()[i],fechaCel,TimeUnit.HOURS.toMillis(Integer.parseInt(datosBean.getFrecuencia()[i]+"")))==NORMAL){
 			
-				LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				clicks[i]=false;
+				
+			LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			final	View view =  inflater.inflate(R.layout.row_evento, null);
 			
 			final	TextView evento_titulo =(TextView)view.findViewById(R.id.row_evento_titulo);
-				evento_titulo.setText(datosBean.getNombre()[i]);
+			evento_titulo.setText(datosBean.getNombre()[i]);
+			
+			final LinearLayout ll_row_evento=(LinearLayout)view.findViewById(R.id.ll_row_evento);
+			
+			//row editar
 				
-				final TextView tv_inicio =(TextView)view.findViewById(R.id.row_evento_tv_inicio);
-				tv_inicio.setText(datosBean.getFecha_inicio()[i]);
+				ll_row_evento.removeAllViews();
+				final View view_normal= cargarViewRowNormal(i);
+				ll_row_evento.addView(view_normal);
 				
-				final TextView tv_fin =(TextView)view.findViewById(R.id.row_evento_tv_fin);
-				tv_fin.setText(datosBean.getFecha_fin()[i]);
 				
-				final TextView tv_hora =(TextView)view.findViewById(R.id.row_evento_tv_hora);
-				tv_hora.setText(datosBean.getHora_inicio()[i]+" hrs");
-				
-				final TextView tv_tiempo =(TextView)view.findViewById(R.id.row_evento_tv_tiempo);
-				tv_tiempo.setText(datosBean.getFrecuencia()[i]+" hrs");
+		
+			
+			//obtenemos el alto de el linear
+			ll_row_evento.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
+			final int height = ll_row_evento.getMeasuredHeight();
+			
+		
 	
-				view.setTag(datosBean.getId()[i]);
+				view.setTag(i+"@"+datosBean.getId()[i].toString()+"@"+datosBean.getNombre()[i].toString()+"@"
+				+datosBean.getFecha_inicio()[i].toString()+"@"+datosBean.getFecha_fin()[i].toString()+"@"
+						+datosBean.getFrecuencia()[i].toString());
+				
 				view.setOnLongClickListener(new OnLongClickListener() {
 					
 					@Override
 					public boolean onLongClick(View v) {
-	
-						showDialogEdit(v.getTag()+"").show();
+					
+						if(linearLongClick!=null){
+
+							linearLongClick= null;
+							
+						}else{
+						ll_row_evento.removeAllViews();
+						String[] separated = view.getTag().toString().split("@");
+						ll_row_evento.addView(cargarViewRowBorrar(Integer.parseInt(separated[1]),height,Integer.parseInt(separated[0]),
+								evento_titulo,ll_row_evento,separated[2],separated[3],separated[4],separated[5]));
+						linearLongClick= separated[0];
+						view.clearFocus();
+
+						}
+
+						
+						
+				
+
 						return false;
 					}
 				});
@@ -293,52 +330,105 @@ public class MedicinasFragment extends Fragment  {
 
 				    @Override
 				    public boolean onTouch(View v, MotionEvent event) {
-				    	TransitionDrawable transition = (TransitionDrawable) v.getBackground();
+				    	TransitionDrawable transition = (TransitionDrawable) view.getBackground();
+				    	String[] separated = view.getTag().toString().split("@");
+				    	String tag = separated[0];
+				    	
 				        switch(event.getAction()) {
 
 				        case MotionEvent.ACTION_DOWN:
-				        	transition.startTransition(1000);
-				        	evento_titulo.setBackgroundColor(getResources().getColor(R.color.color_blanco));
-				        	evento_titulo.setTextColor(getResources().getColor(R.color.color_base));
-				        	tv_inicio.setTextColor(getResources().getColor(R.color.color_blanco));
-				        	tv_fin.setTextColor(getResources().getColor(R.color.color_blanco));
-				        	tv_hora.setTextColor(getResources().getColor(R.color.color_blanco));
-				        	tv_tiempo.setTextColor(getResources().getColor(R.color.color_blanco));
-				        	((TextView)view.findViewById(R.id.row_evento_tv_inicio_base)).setTextColor(getResources().getColor(R.color.color_blanco));
-				        	((TextView)view.findViewById(R.id.row_evento_tv_fin_base)).setTextColor(getResources().getColor(R.color.color_blanco));
-				        	((TextView)view.findViewById(R.id.row_evento_tv_hora_base)).setTextColor(getResources().getColor(R.color.color_blanco));
-				        	((TextView)view.findViewById(R.id.row_evento_tv_tiempo_base)).setTextColor(getResources().getColor(R.color.color_blanco));
+				 
+
+				        	if(tag.equals(linearLongClick)){
+				        		transition.startTransition(1000);	
+				        		linearLongClick=null;
+
+					        	evento_titulo.setBackgroundColor(getResources().getColor(R.color.color_blanco));
+					        	evento_titulo.setTextColor(getResources().getColor(R.color.color_base));
+					        	try{
+					        		((TextView)view_normal.findViewById(R.id.row_evento_tv_fin)).setTextColor(getResources().getColor(R.color.color_blanco));
+						        	((TextView)view_normal.findViewById(R.id.row_evento_tv_hora)).setTextColor(getResources().getColor(R.color.color_blanco));
+						        	((TextView)view_normal.findViewById(R.id.row_evento_tv_tiempo)).setTextColor(getResources().getColor(R.color.color_blanco));
+						        	((TextView)view_normal.findViewById(R.id.row_evento_tv_inicio)).setTextColor(getResources().getColor(R.color.color_blanco));
+					        		
+					        		
+						        	((TextView)view_normal.findViewById(R.id.row_evento_tv_inicio_base)).setTextColor(getResources().getColor(R.color.color_blanco));
+						        	((TextView)view_normal.findViewById(R.id.row_evento_tv_fin_base)).setTextColor(getResources().getColor(R.color.color_blanco));
+						        	((TextView)view_normal.findViewById(R.id.row_evento_tv_hora_base)).setTextColor(getResources().getColor(R.color.color_blanco));
+						        	((TextView)view_normal.findViewById(R.id.row_evento_tv_tiempo_base)).setTextColor(getResources().getColor(R.color.color_blanco));
+					        	}catch(Exception e){
+					        		e.printStackTrace();
+					        	}
+				        	}else{
+					        	evento_titulo.setBackgroundColor(getResources().getColor(R.color.color_blanco));
+					        	evento_titulo.setTextColor(getResources().getColor(R.color.color_base));
+				        		transition.startTransition(1000);	
+
+				        		ll_row_evento.removeAllViews();
+								ll_row_evento.addView(cargarViewRowNormal(Integer.parseInt(tag)));
+				        	}
 				        	return false;
 
-				        case MotionEvent.ACTION_UP:			        	
-				        	transition.reverseTransition(1000); 
+				        case MotionEvent.ACTION_UP:	
+
+				        	if(tag.equals(linearLongClick)){
+				        		linearLongClick=null;
+					        	transition.reverseTransition(1000); 
 				        	evento_titulo.setBackgroundColor(getResources().getColor(R.color.color_base));
 				        	evento_titulo.setTextColor(getResources().getColor(R.color.color_blanco));
-				        	tv_inicio.setTextColor(getResources().getColor(R.color.color_negro));
-				        	tv_fin.setTextColor(getResources().getColor(R.color.color_negro));
-				        	tv_hora.setTextColor(getResources().getColor(R.color.color_negro));
-				        	tv_tiempo.setTextColor(getResources().getColor(R.color.color_negro));
-				        	((TextView)view.findViewById(R.id.row_evento_tv_inicio_base)).setTextColor(getResources().getColor(R.color.color_negro));
-				        	((TextView)view.findViewById(R.id.row_evento_tv_fin_base)).setTextColor(getResources().getColor(R.color.color_negro));
-				        	((TextView)view.findViewById(R.id.row_evento_tv_hora_base)).setTextColor(getResources().getColor(R.color.color_negro));
-				        	((TextView)view.findViewById(R.id.row_evento_tv_tiempo_base)).setTextColor(getResources().getColor(R.color.color_negro));
+				        	
+				        	try{
+				        		((TextView)view_normal.findViewById(R.id.row_evento_tv_fin)).setTextColor(getResources().getColor(R.color.color_negro));
+					        	((TextView)view_normal.findViewById(R.id.row_evento_tv_hora)).setTextColor(getResources().getColor(R.color.color_negro));
+					        	((TextView)view_normal.findViewById(R.id.row_evento_tv_tiempo)).setTextColor(getResources().getColor(R.color.color_negro));
+					        	((TextView)view_normal.findViewById(R.id.row_evento_tv_inicio)).setTextColor(getResources().getColor(R.color.color_negro));
+				        		
+				        		
+					        	((TextView)view_normal.findViewById(R.id.row_evento_tv_inicio_base)).setTextColor(getResources().getColor(R.color.color_negro));
+					        	((TextView)view_normal.findViewById(R.id.row_evento_tv_fin_base)).setTextColor(getResources().getColor(R.color.color_negro));
+					        	((TextView)view_normal.findViewById(R.id.row_evento_tv_hora_base)).setTextColor(getResources().getColor(R.color.color_negro));
+					        	((TextView)view_normal.findViewById(R.id.row_evento_tv_tiempo_base)).setTextColor(getResources().getColor(R.color.color_negro));
+				        	}catch(Exception e){
+				        		e.printStackTrace();
+				        	}
+				        	}else{
+					        	evento_titulo.setBackgroundColor(getResources().getColor(R.color.color_base));
+					        	evento_titulo.setTextColor(getResources().getColor(R.color.color_blanco));
+				        		transition.reverseTransition(1000); 
+				        	}
 				        	return false;
 				        	
-				        case MotionEvent.ACTION_CANCEL:			        	
-				        	transition.reverseTransition(1000); 
+				        case MotionEvent.ACTION_CANCEL:		
+
+				        	if(tag.equals(linearLongClick)){
+					        	transition.reverseTransition(1000); 
+				        		linearLongClick=null;
 				        	evento_titulo.setBackgroundColor(getResources().getColor(R.color.color_base));
 				        	evento_titulo.setTextColor(getResources().getColor(R.color.color_blanco));
-				        	tv_inicio.setTextColor(getResources().getColor(R.color.color_negro));
-				        	tv_fin.setTextColor(getResources().getColor(R.color.color_negro));
-				        	tv_hora.setTextColor(getResources().getColor(R.color.color_negro));
-				        	tv_tiempo.setTextColor(getResources().getColor(R.color.color_negro));
-				        	((TextView)view.findViewById(R.id.row_evento_tv_inicio_base)).setTextColor(getResources().getColor(R.color.color_negro));
-				        	((TextView)view.findViewById(R.id.row_evento_tv_fin_base)).setTextColor(getResources().getColor(R.color.color_negro));
-				        	((TextView)view.findViewById(R.id.row_evento_tv_hora_base)).setTextColor(getResources().getColor(R.color.color_negro));
-				        	((TextView)view.findViewById(R.id.row_evento_tv_tiempo_base)).setTextColor(getResources().getColor(R.color.color_negro));
+				        	
+				        	try{
+				        		((TextView)view_normal.findViewById(R.id.row_evento_tv_fin)).setTextColor(getResources().getColor(R.color.color_negro));
+					        	((TextView)view_normal.findViewById(R.id.row_evento_tv_hora)).setTextColor(getResources().getColor(R.color.color_negro));
+					        	((TextView)view_normal.findViewById(R.id.row_evento_tv_tiempo)).setTextColor(getResources().getColor(R.color.color_negro));
+					        	((TextView)view_normal.findViewById(R.id.row_evento_tv_inicio)).setTextColor(getResources().getColor(R.color.color_negro));
+				        		
+				        		
+					        	((TextView)view_normal.findViewById(R.id.row_evento_tv_inicio_base)).setTextColor(getResources().getColor(R.color.color_negro));
+					        	((TextView)view_normal.findViewById(R.id.row_evento_tv_fin_base)).setTextColor(getResources().getColor(R.color.color_negro));
+					        	((TextView)view_normal.findViewById(R.id.row_evento_tv_hora_base)).setTextColor(getResources().getColor(R.color.color_negro));
+					        	((TextView)view_normal.findViewById(R.id.row_evento_tv_tiempo_base)).setTextColor(getResources().getColor(R.color.color_negro));
+				        	}catch(Exception e){
+				        		e.printStackTrace();
+				        	}
+				        	}else{
+					        	evento_titulo.setBackgroundColor(getResources().getColor(R.color.color_base));
+					        	evento_titulo.setTextColor(getResources().getColor(R.color.color_blanco));
+				        		transition.reverseTransition(1000); 
+				        	}
 				        	return false;
 				        	
 				            
+				        
 				        }
 
 				        return true;
@@ -421,4 +511,94 @@ public class MedicinasFragment extends Fragment  {
 		}
 		return NORMAL;
     }
+    
+    
+    
+    public View cargarViewRowNormal(int id){
+    	LayoutInflater inflater_normal = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		final	View view_normals =  inflater_normal.inflate(R.layout.row_evento_normal, null);
+
+		final TextView tv_inicio =(TextView)view_normals.findViewById(R.id.row_evento_tv_inicio);
+		tv_inicio.setText(datosBean.getFecha_inicio()[id]);
+		
+		final TextView tv_fin =(TextView)view_normals.findViewById(R.id.row_evento_tv_fin);
+		tv_fin.setText(datosBean.getFecha_fin()[id]);
+		
+		final TextView tv_hora =(TextView)view_normals.findViewById(R.id.row_evento_tv_hora);
+		tv_hora.setText(datosBean.getHora_inicio()[id]+" hrs");
+		
+		final TextView tv_tiempo =(TextView)view_normals.findViewById(R.id.row_evento_tv_tiempo);
+		tv_tiempo.setText(datosBean.getFrecuencia()[id]+" hrs");
+		return view_normals;
+    }
+    
+    
+    
+    public View cargarViewRowBorrar(final int id, int alto,final  int id_row,final TextView evento_titulo,
+    		final LinearLayout ll_row_evento,final String nombre,final String fecha_inicio,final String fecha_fin,final String horas){
+    	
+    	LayoutInflater inflater_edit = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		final	View view_edit =  inflater_edit.inflate(R.layout.row_editar, null);
+		view_edit.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,alto));
+		ImageView iv_editar= (ImageView)view_edit.findViewById(R.id.row_editar_iv_editar);
+		iv_editar.requestFocus();
+		iv_editar.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				
+            	for(int i=0;i<datosBean.getId().length;i++){
+            		if(datosBean.getId()[i].equals(id+"")){
+            			String info[] = new String[]{datosBean.getNombre()[i],
+            					datosBean.getFecha_inicio()[i],
+            					datosBean.getFecha_fin()[i],
+            					datosBean.getHora_inicio()[i],
+            					datosBean.getFrecuencia()[i]	
+            			};
+            			id_=id+"";
+            			startActivityForResult(new Intent(activity, DatosDialogActivity.class).putExtra("info", info),1);
+            		}
+            	}
+            	
+            	;
+				evento_titulo.setBackgroundColor(getResources().getColor(R.color.color_base));
+	        	evento_titulo.setTextColor(getResources().getColor(R.color.color_blanco));	
+        		ll_row_evento.removeAllViews();
+				ll_row_evento.addView(cargarViewRowNormal(id_row));
+			}
+		});
+		
+		ImageView iv_borrar= (ImageView)view_edit.findViewById(R.id.row_editar_iv_borrar);
+		iv_borrar.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				borrarEvento(id+"");
+				
+			}
+		});
+		
+		
+		ImageView iv_compartir= (ImageView)view_edit.findViewById(R.id.row_editar_iv_compartir);
+		iv_compartir.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+				sharingIntent.setType("text/plain");
+				String shareBody = getString(R.string.compartir_uno)+" "+nombre+" "+getString(R.string.compartir_dos)+" "+fecha_inicio+" "+
+						getString(R.string.compartir_tres)+" "+fecha_fin+" "+getString(R.string.compartir_cuatro)+" "+horas+" horas. "+"#Pastillero";
+				sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Pastillero");
+				sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+				startActivity(Intent.createChooser(sharingIntent, "Share via"));
+				
+			}
+		});
+		
+		
+		
+		return view_edit;
+    }
+    
+    
 }

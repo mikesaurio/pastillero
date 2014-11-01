@@ -12,98 +12,19 @@
         android:id="@+id/row_evento_titulo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:background="@color/color_base"
+        android:gravity="center"
         android:padding="5dp"
-        android:textColor="@color/color_blanco"
-        android:text="TITULO " />
+        android:text="TITULO "
+        android:textColor="@color/color_blanco" />
 
     <LinearLayout
+        android:id="@+id/ll_row_evento"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dp" >
+        android:layout_height="wrap_content" 
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/row_evento_tv_inicio_base"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".5"
-            android:text="Fecha Inicio: " />
-
-        <TextView
-            android:id="@+id/row_evento_tv_inicio"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".5"
-            android:gravity="left"
-            android:paddingLeft="5dp"
-            android:text="fecha" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dp" >
-
-        <TextView
-            android:id="@+id/row_evento_tv_fin_base"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".5"
-            android:text="Fecha Fin: " />
-
-        <TextView
-            android:id="@+id/row_evento_tv_fin"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".5"
-            android:gravity="left"
-            android:paddingLeft="5dp"
-            android:text="fecha" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dp" >
-
-        <TextView
-            android:id="@+id/row_evento_tv_hora_base"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".5"
-            android:text="Hora inicio: " />
-
-        <TextView
-            android:id="@+id/row_evento_tv_hora"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".5"
-            android:gravity="left"
-            android:paddingLeft="5dp"
-            android:text="hora" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dp" >
-
-        <TextView
-            android:id="@+id/row_evento_tv_tiempo_base"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".5"
-            android:text="Cada: " />
-
-        <TextView
-            android:id="@+id/row_evento_tv_tiempo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".5"
-            android:gravity="left"
-            android:paddingLeft="5dp"
-            android:text="n tiempo" />
+      
     </LinearLayout>
 
 </LinearLayout>
