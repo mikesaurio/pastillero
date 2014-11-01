@@ -2,6 +2,7 @@ package com.mikesaurio.pastillero;
 
 import java.io.IOException;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -22,6 +23,8 @@ import com.mikesaurio.pastillero.custom.CustomList;
 import com.mikesaurio.pastillero.fragments.AcercaDeFragment;
 import com.mikesaurio.pastillero.fragments.CitasFragment;
 import com.mikesaurio.pastillero.fragments.MedicinasFragment;
+import com.mikesaurio.pastillero.servicio.servicio_alarma;
+import com.mikesaurio.pastillero.servicio.servicio_citas;
 ;
 
 
@@ -87,6 +90,8 @@ public class PastilleroActivity extends ActionBarActivity {
 		};
 		
 		drawerLayout.setDrawerListener(drawerToggle);
+		
+		iniciarServicios();
 		
 		
 		selectItem(0);
@@ -201,7 +206,7 @@ public class PastilleroActivity extends ActionBarActivity {
 
 	@Override
 	public void onBackPressed() {
-		if(position!=0){
+		if(position==2){
 			supportInvalidateOptionsMenu();
 			selectItem(0);
 		}else{
@@ -210,7 +215,18 @@ public class PastilleroActivity extends ActionBarActivity {
 		
 	}
 	
-	
+	/**
+	 * Termina e inicia el servicio de nuevo
+	 */
+	public void iniciarServicios(){
+
+		
+		this.stopService(new Intent(this, servicio_citas.class));
+		this.startService(new Intent(this, servicio_citas.class));
+		
+		this.stopService(new Intent(this, servicio_alarma.class));
+		this.startService(new Intent(this, servicio_alarma.class));
+	}
 	
 	
 }

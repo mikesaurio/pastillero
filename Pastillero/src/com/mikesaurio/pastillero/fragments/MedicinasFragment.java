@@ -189,6 +189,9 @@ public class MedicinasFragment extends Fragment  {
 		activity.stopService(new Intent(activity, servicio_alarma.class));
 		activity.startService(new Intent(activity, servicio_alarma.class));
 	}
+	public void detenerServicio(){
+		activity.stopService(new Intent(activity, servicio_alarma.class));
+	}
 	
 	
 	
@@ -236,6 +239,7 @@ public class MedicinasFragment extends Fragment  {
 				iniciarServicio();
 			}
 			else{
+				detenerServicio();
 				addView(view);
 			}
 			

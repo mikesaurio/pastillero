@@ -23,6 +23,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.mikesaurio.pastillero.PastilleroActivity;
@@ -62,6 +63,7 @@ public class servicio_alarma extends Service {
     @SuppressLint("SimpleDateFormat")
 	private void startService() throws ParseException
     {          
+    	  Log.d("Alarma iniciado******", "*********");
     	iniciarDatos();
     }
     
@@ -120,6 +122,7 @@ public class servicio_alarma extends Service {
     				diff =  formatter.parse(fecha_siguiente).getTime()-date_telefono.getTime();
     				timer[val].scheduleAtFixedRate( task[val], diff,intervalo_alarma);
     			}
+    			Log.d("ALARMA******", diff+"");
     			
     	}
 
@@ -165,6 +168,7 @@ public class servicio_alarma extends Service {
 	    	}
     	}
     	datosBean = null;
+    	 Log.d("Alarma terminado******", "*********");
           super.onDestroy();
          
     }
@@ -243,6 +247,8 @@ public class servicio_alarma extends Service {
             noti.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
 
             mNotificationManager.notify(not, noti);
+            
+            
 
             return null;
 

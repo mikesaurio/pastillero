@@ -1,4 +1,4 @@
-package com.mikesaurio.pastillero.bd;
+   package com.mikesaurio.pastillero.bd;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -54,7 +54,7 @@ public class DBHelper extends SQLiteOpenHelper {
 			
 			
 		} catch (Exception e) {
-			Log.i("Base de datos", "falla en checkDataBAse");
+			Log.d("Base de datos", "falla en checkDataBAse, instalando....");
 		}
 		if (checkDB != null) {
 			checkDB.close();

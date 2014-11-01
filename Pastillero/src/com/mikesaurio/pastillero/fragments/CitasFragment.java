@@ -5,7 +5,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -19,10 +18,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -31,10 +30,8 @@ import android.widget.TextView;
 import com.mikesaurio.pastillero.R;
 import com.mikesaurio.pastillero.bd.DBHelper;
 import com.mikesaurio.pastillero.bean.CitasBean;
-import com.mikesaurio.pastillero.bean.DatosBean;
 import com.mikesaurio.pastillero.dialogos.CitasDialogActivity;
 import com.mikesaurio.pastillero.dialogos.DatosDialogActivity;
-import com.mikesaurio.pastillero.servicio.servicio_alarma;
 import com.mikesaurio.pastillero.servicio.servicio_citas;
 import com.mikesaurio.pastillero.utilerias.Utilerias;
 
@@ -178,9 +175,10 @@ public class CitasFragment extends Fragment  {
 			if(citasBean!=null){
 
 				iniciarDatos();
-				iniciarServicio();
+				iniciarServicio_citas();
 			}
 			else{
+				detenerServicio_citas();
 				addView(view);
 			}
 			
@@ -189,6 +187,9 @@ public class CitasFragment extends Fragment  {
 		}
 		
 	}
+
+	
+
 
 	/**
 	 * Inicia los objetos con la informacion de la BD
@@ -402,9 +403,14 @@ public class CitasFragment extends Fragment  {
 	/**
 	 * Termina e inicia el servicio de nuevo
 	 */
-	public void iniciarServicio(){
-		activity.stopService(new Intent(activity, servicio_citas.class));
+	public void iniciarServicio_citas(){
+		
 		activity.startService(new Intent(activity, servicio_citas.class));
 	}
+	private void detenerServicio_citas() {
+		activity.stopService(new Intent(activity, servicio_citas.class));
+		
+	}
+
 	
 }
