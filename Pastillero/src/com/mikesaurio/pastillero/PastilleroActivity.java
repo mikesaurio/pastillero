@@ -91,8 +91,8 @@ public class PastilleroActivity extends ActionBarActivity {
 		
 		drawerLayout.setDrawerListener(drawerToggle);
 		
-		iniciarServicios();
 		
+		iniciarServicios();
 		
 		selectItem(0);
 
@@ -219,18 +219,13 @@ public class PastilleroActivity extends ActionBarActivity {
 		
 	}
 	
-	/**
-	 * Termina e inicia el servicio de nuevo
-	 */
-	public void iniciarServicios(){
-
-		
-		this.stopService(new Intent(this, servicio_citas.class));
-		this.startService(new Intent(this, servicio_citas.class));
-		
-		this.stopService(new Intent(this, servicio_alarma.class));
-		this.startService(new Intent(this, servicio_alarma.class));
-	}
 	
+	public void iniciarServicios(){
+		 Intent myIntent = new Intent(this, servicio_alarma.class);
+	      startService(myIntent);
+	      
+	      Intent myIntent_ = new Intent(this, servicio_citas.class);
+	      startService(myIntent_);
+	}
 	
 }

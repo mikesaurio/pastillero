@@ -7,7 +7,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -21,6 +20,7 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -30,8 +30,6 @@ import com.mikesaurio.pastillero.PastilleroActivity;
 import com.mikesaurio.pastillero.R;
 import com.mikesaurio.pastillero.bd.DBHelper;
 import com.mikesaurio.pastillero.bean.CitasBean;
-import com.mikesaurio.pastillero.bean.DatosBean;
-import com.mikesaurio.pastillero.utilerias.Utilerias;
 
 /**
  * Servicio que controla las notificaciones
@@ -71,6 +69,9 @@ public class servicio_citas extends Service {
      * @throws ParseException
      */
     private void iniciarCitas() throws ParseException{
+    	
+    	matarHilos();
+    	
     	timer_citas = new Timer[citasBean.getId().length];
     	HiloTask_citas[] task_citas= new HiloTask_citas[citasBean.getId().length];
     	
@@ -92,16 +93,30 @@ public class servicio_citas extends Service {
     			
 
     			timer_citas[val]= new Timer();
-    			task_citas[val]= new HiloTask_citas(citasBean.getNombre()[val], citasBean.getId()[val], citasBean.getFecha()[val], fechaCel, citasBean.getHora()[val]);
+    			task_citas[val]= new HiloTask_citas(citasBean.getNombre()[val], citasBean.getId()[val]);
     			
     			
     			if(diff>=0){
-    				timer_citas[val].scheduleAtFixedRate( task_citas[val], diff,3600000);
+    				timer_citas[val].schedule( task_citas[val], diff,3600000);
     			}else{
     				borrarEvento_citas(citasBean.getId()[val]);
     			}
     			Log.d("CITAS******", diff+"");
     			
+    	}
+
+		
+	}
+
+	public void matarHilos() {
+    	if(timer_citas!=null){
+	    	for(int val=0;val<timer_citas.length;val++)	{	
+	    		if(timer_citas[val]!=null){
+		    		timer_citas[val].cancel();
+		    		timer_citas[val].purge();
+		    		timer_citas[val]=null;
+	    		}
+	    	}
     	}
 
 		
@@ -138,13 +153,8 @@ public class servicio_citas extends Service {
 	 */
     public void onDestroy() 
     {
-    	not_citas=1000;
-    	if(timer_citas!=null){
-	    	for(int val=0;val<timer_citas.length;val++)	{	
-	    		timer_citas[val].cancel();
-	    		timer_citas[val]=null;
-	    	}
-    	}
+		not_citas=1000;
+    	matarHilos();
     	citasBean = null;
     	  Log.d("CITAS destruido******", "*********");
           super.onDestroy();
@@ -229,6 +239,13 @@ public class servicio_citas extends Service {
             return null;
 
         }
+        @Override
+		protected void onPreExecute() {
+			 Vibrator v = (Vibrator) servicio_citas.this.getSystemService(Context.VIBRATOR_SERVICE);
+			 v.vibrate(1000);
+			super.onPreExecute();
+		}
+        
     }
     
     
@@ -271,9 +288,6 @@ public class servicio_citas extends Service {
     public class HiloTask_citas extends TimerTask{
     	String titulo= getString(R.string.app_name);
 		private String id;
-		private String fecha_fin;
-		private String fecha_cel;
-		private String hora_cita;
     	
     	/**
     	 * construtor
@@ -283,51 +297,24 @@ public class servicio_citas extends Service {
     	 * @param fecha_cel
     	 * @param intervalo
     	 */
-    	public HiloTask_citas(String titulo,String id,String fecha_fin,String fecha_cel,String hora_cita){
+    	public HiloTask_citas(String titulo,String id){
     		this.titulo=titulo;
     		this.id=id;
-    		this.fecha_fin=fecha_fin;
-    		this.fecha_cel=fecha_cel;
-    		this.hora_cita=hora_cita;
     	}
     	
 		@Override
 		public void run() {
-			int respuesta=eliminaEvento_citas(id, fecha_fin, fecha_cel, hora_cita);
-	        	if(respuesta==NORMAL_citas){
+			
 		        	  Message message = toastHandler_citas.obtainMessage(); 
 	 		          message.obj = titulo;
 	 		          toastHandler_citas.sendMessage(message);
-	        	}
+	 		          borrarEvento_citas(id);
 		}
     	
     }
    
    
-    /**
-     * valida y elimina los eventos caducos
-     * @param id
-     * @param fecha_fin
-     * @param fecha_cel
-     * @param hora_cita
-     * @return
-     */
-    public int eliminaEvento_citas(String id,String fecha_fin,String fecha_cel,String hora_cita){
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		try {
-			Date	date_telefono = formatter.parse(fecha_cel);
-			Date date_fin = formatter.parse(fecha_fin+" "+hora_cita+":00");
-			
-			if( date_telefono.getTime()>date_fin.getTime()){
-				borrarEvento_citas(id);
-	    		return ELIMINADO_citas;
-	    	}
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return NORMAL_citas;
-    }
-    
+   
     
     /**
 	 * Elimina un eevnto en especifico

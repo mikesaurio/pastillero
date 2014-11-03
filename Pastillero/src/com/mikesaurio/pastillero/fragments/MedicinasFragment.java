@@ -8,26 +8,20 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.TransitionDrawable;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.MeasureSpec;
-import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -50,7 +44,6 @@ public class MedicinasFragment extends Fragment  {
 	LinearLayout ll_eventos;
 	Activity activity;
 	private DatosBean datosBean;
-	private AlertDialog customDialog;
 	private View view;
 	public static String id_ =null;
 	private static final int ELIMINADO = 0;
@@ -90,24 +83,6 @@ public class MedicinasFragment extends Fragment  {
 	
 	
 
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		 if (requestCode == 0) {
-		        if(resultCode == DatosDialogActivity.OK){
-		            String result=data.getStringExtra("resultado");
-		            llenarEvento(result);
-		        }
-		    }
-		 if (requestCode == 1) {
-		        if(resultCode == DatosDialogActivity.OK){
-		            String result=data.getStringExtra("resultado");
-		            udateEvento(result,id_);
-		            id_= null;
-
-		        }
-		    }
-		super.onActivityResult(requestCode, resultCode, data);
-	}
 
 
 	
@@ -135,55 +110,6 @@ public class MedicinasFragment extends Fragment  {
 	public void setMensaje(){
 		startActivityForResult(new Intent(activity, DatosDialogActivity.class),0);
 	}
-	
-	/**
-	 * Dialogo para borrar un registro app
-	 *
-	 * @param Activity (actividad que llama al di‡logo)
-	 * @return Dialog (regresa el dialogo creado)
-	 **/
-	
-	public  Dialog showDialogEdit(final String id){
-		
-		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-	    View view = activity.getLayoutInflater().inflate(R.layout.dialogo_edit_borrar, null);
-	    builder.setView(view);
-	    builder.setCancelable(true);
-	    
-
-        ((Button) view.findViewById(R.id.dialogo_btn_editar)).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view)
-            {
-            	for(int i=0;i<datosBean.getId().length;i++){
-            		if(datosBean.getId()[i].equals(id)){
-            			String info[] = new String[]{datosBean.getNombre()[i],
-            					datosBean.getFecha_inicio()[i],
-            					datosBean.getFecha_fin()[i],
-            					datosBean.getHora_inicio()[i],
-            					datosBean.getFrecuencia()[i]	
-            			};
-            			id_=id;
-            			startActivityForResult(new Intent(activity, DatosDialogActivity.class).putExtra("info", info),1);
-            		}
-            	}
-            	
-            	 customDialog.dismiss(); 
-            	 
-            	 
-            }
-        });
-
-        ((Button) view.findViewById(R.id.dialogo_btn_borrar)).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view)
-            {
-            	borrarEvento(id);
-                customDialog.dismiss();    
-            }
-        });
-        return (customDialog=builder.create());
-    }  
 	
 	
 	
@@ -254,6 +180,47 @@ public class MedicinasFragment extends Fragment  {
 		}
 		
 	}
+	
+	/**
+	 * Carga un evento en la BD
+	 * @param result
+	 */
+	public void llenarEvento(String result) {
+		
+		String[] valores = result.split("@");
+		try {
+			DBHelper	BD = new DBHelper(activity);
+			SQLiteDatabase bd = BD.loadDataBase(BD);
+			BD.setDatos(bd,valores);
+			BD.close();
+			
+			cargarDatos();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	/**
+	 * Elimina un eevnto en especifico
+	 * @param id
+	 */
+	public void borrarEvento(String id) {
+		
+		try {
+			DBHelper	BD = new DBHelper(activity);
+			SQLiteDatabase bd = BD.loadDataBase(BD);
+			BD.borrarDato(bd,id);
+			BD.close();
+			
+			cargarDatos();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
 
 	/**
 	 * Inicia los objetos con la informacion de la BD
@@ -314,6 +281,7 @@ public class MedicinasFragment extends Fragment  {
 						String[] separated = view.getTag().toString().split("@");
 						ll_row_evento.addView(cargarViewRowBorrar(Integer.parseInt(separated[1]),height,Integer.parseInt(separated[0]),
 								evento_titulo,ll_row_evento,separated[2],separated[3],separated[4],separated[5]));
+						
 						linearLongClick= separated[0];
 						view.clearFocus();
 
@@ -373,9 +341,9 @@ public class MedicinasFragment extends Fragment  {
 
 				        	if(tag.equals(linearLongClick)){
 				        		linearLongClick=null;
-					        	transition.reverseTransition(1000); 
-				        	evento_titulo.setBackgroundColor(getResources().getColor(R.color.color_base));
-				        	evento_titulo.setTextColor(getResources().getColor(R.color.color_blanco));
+					        	transition.reverseTransition(0); 
+					        	evento_titulo.setBackgroundColor(getResources().getColor(R.color.color_base));
+					        	evento_titulo.setTextColor(getResources().getColor(R.color.color_blanco));
 				        	
 				        	try{
 				        		((TextView)view_normal.findViewById(R.id.row_evento_tv_fin)).setTextColor(getResources().getColor(R.color.color_negro));
@@ -394,14 +362,14 @@ public class MedicinasFragment extends Fragment  {
 				        	}else{
 					        	evento_titulo.setBackgroundColor(getResources().getColor(R.color.color_base));
 					        	evento_titulo.setTextColor(getResources().getColor(R.color.color_blanco));
-				        		transition.reverseTransition(1000); 
+				        		transition.reverseTransition(0); 
 				        	}
 				        	return false;
 				        	
 				        case MotionEvent.ACTION_CANCEL:		
 
 				        	if(tag.equals(linearLongClick)){
-					        	transition.reverseTransition(1000); 
+					        	transition.reverseTransition(0); 
 				        		linearLongClick=null;
 				        	evento_titulo.setBackgroundColor(getResources().getColor(R.color.color_base));
 				        	evento_titulo.setTextColor(getResources().getColor(R.color.color_blanco));
@@ -423,7 +391,7 @@ public class MedicinasFragment extends Fragment  {
 				        	}else{
 					        	evento_titulo.setBackgroundColor(getResources().getColor(R.color.color_base));
 					        	evento_titulo.setTextColor(getResources().getColor(R.color.color_blanco));
-				        		transition.reverseTransition(1000); 
+				        		transition.reverseTransition(0); 
 				        	}
 				        	return false;
 				        	
@@ -445,46 +413,7 @@ public class MedicinasFragment extends Fragment  {
 	
 
 	
-	/**
-	 * Carga un evento en la BD
-	 * @param result
-	 */
-	public void llenarEvento(String result) {
-		
-		String[] valores = result.split("@");
-		try {
-			DBHelper	BD = new DBHelper(activity);
-			SQLiteDatabase bd = BD.loadDataBase(BD);
-			BD.setDatos(bd,valores);
-			BD.close();
-			
-			cargarDatos();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-	}
 	
-	/**
-	 * Elimina un eevnto en especifico
-	 * @param id
-	 */
-	public void borrarEvento(String id) {
-		
-		try {
-			DBHelper	BD = new DBHelper(activity);
-			SQLiteDatabase bd = BD.loadDataBase(BD);
-			BD.borrarDato(bd,id);
-			BD.close();
-			
-			cargarDatos();
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-	}
 	
 	/*******************************************************Termina Metodo de interaccion con la Base de datos*****************************************/	
 	
@@ -513,7 +442,11 @@ public class MedicinasFragment extends Fragment  {
     }
     
     
-    
+    /**
+     * carga la informacion de una medicina
+     * @param id
+     * @return
+     */
     public View cargarViewRowNormal(int id){
     	LayoutInflater inflater_normal = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		final	View view_normals =  inflater_normal.inflate(R.layout.row_evento_normal, null);
@@ -534,6 +467,19 @@ public class MedicinasFragment extends Fragment  {
     
     
     
+    /**
+     * Row con opciones de editar, borrar y compartir una medicina
+     * @param id
+     * @param alto
+     * @param id_row
+     * @param evento_titulo
+     * @param ll_row_evento
+     * @param nombre
+     * @param fecha_inicio
+     * @param fecha_fin
+     * @param horas
+     * @return
+     */
     public View cargarViewRowBorrar(final int id, int alto,final  int id_row,final TextView evento_titulo,
     		final LinearLayout ll_row_evento,final String nombre,final String fecha_inicio,final String fecha_fin,final String horas){
     	
@@ -587,8 +533,8 @@ public class MedicinasFragment extends Fragment  {
 				Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
 				sharingIntent.setType("text/plain");
 				String shareBody = getString(R.string.compartir_uno)+" "+nombre+" "+getString(R.string.compartir_dos)+" "+fecha_inicio+" "+
-						getString(R.string.compartir_tres)+" "+fecha_fin+" "+getString(R.string.compartir_cuatro)+" "+horas+" horas. "+"#Pastillero";
-				sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Pastillero");
+						getString(R.string.compartir_tres)+" "+fecha_fin+" "+getString(R.string.compartir_cuatro)+" "+horas+" horas. ";
+				sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "#Pastillero");
 				sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
 				startActivity(Intent.createChooser(sharingIntent, "Share via"));
 				
@@ -600,5 +546,27 @@ public class MedicinasFragment extends Fragment  {
 		return view_edit;
     }
     
+    
+    
+    
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		 if (requestCode == 0) {
+		        if(resultCode == DatosDialogActivity.OK){
+		            String result=data.getStringExtra("resultado");
+		            llenarEvento(result);
+		        }
+		    }
+		 if (requestCode == 1) {
+		        if(resultCode == DatosDialogActivity.OK){
+		            String result=data.getStringExtra("resultado");
+		            udateEvento(result,id_);
+		            id_= null;
+
+		        }
+		    }
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
     
 }

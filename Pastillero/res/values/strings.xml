@@ -60,5 +60,10 @@
      <string name="compartir_dos">del día:</string>
      <string name="compartir_tres">al día:</string>
      <string name="compartir_cuatro">cada: </string>
+     
+      <!-- Compartir cita -->
+     <string name="cita_compartir_uno">Tengo la cita:</string>
+     <string name="cita_compartir_dos">El día:</string>
+     <string name="ccita_ompartir_tres">a las:</string>
 
 </resources>

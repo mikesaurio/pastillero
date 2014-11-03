@@ -21,6 +21,7 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -72,6 +73,8 @@ public class servicio_alarma extends Service {
      * @throws ParseException
      */
     private void iniciarDatos() throws ParseException{
+    	matarHilos();
+    	
     	timer = new Timer[datosBean.getId().length];
     	HiloTask[] task= new HiloTask[datosBean.getId().length];
     	
@@ -91,6 +94,7 @@ public class servicio_alarma extends Service {
     			long diff = date_inicio.getTime() - date_telefono.getTime();
     			
     			long intervalo_alarma = TimeUnit.HOURS.toMillis(Integer.parseInt(datosBean.getFrecuencia()[val]+""));
+    			
 
     			timer[val]= new Timer();
     			task[val]= new HiloTask(datosBean.getNombre()[val], datosBean.getId()[val],
@@ -100,32 +104,35 @@ public class servicio_alarma extends Service {
     			if(diff>=0){
     				timer[val].scheduleAtFixedRate( task[val], diff,intervalo_alarma);
     			}else{
-    				String fechaUnida=now.get(Calendar.DAY_OF_MONTH)+"/"+((now.get(Calendar.MONTH))+1)+"/"+now.get(Calendar.YEAR)+
-        					" "+datosBean.getHora_inicio()[val]+":00";
-    				Date date_unidas= formatter.parse(fechaUnida);
+
+    				long dif = date_inicio.getTime();
     				
-    				long dif = date_unidas.getTime();
-    				
-    				long compara = date_inicio.getTime() - date_unidas.getTime();
-    				if(compara>=0){
 	    				do{
 	    					dif += intervalo_alarma;   					
-	    				}while(dif<=date_telefono.getTime());   
-    				} else if(compara<0){
-	    				do{
-	    					dif -= intervalo_alarma;   					
-	    				}while(dif>date_telefono.getTime());  
-	    				dif += intervalo_alarma;
-    				}
+	    				}while(dif<=date_telefono.getTime());  
     				
     				String fecha_siguiente=Utilerias.getDate(dif, formatter);
     				diff =  formatter.parse(fecha_siguiente).getTime()-date_telefono.getTime();
-    				timer[val].scheduleAtFixedRate( task[val], diff,intervalo_alarma);
+        			
+    				timer[val].schedule( task[val], diff,intervalo_alarma);
     			}
-    			Log.d("ALARMA******", diff+"");
-    			
+    			Log.d("*******inicio", diff+"");
+    			Log.d("*******intervalo", intervalo_alarma+"");
     	}
 
+		
+	}
+
+	public void matarHilos() {
+		if(timer!=null){
+	    	for(int val=0;val<timer.length;val++)	{	
+	    		if(timer[val]!=null){
+	    			timer[val].cancel();
+	    			timer[val].purge();
+	    			timer[val]=null;
+	    		}
+	    	}
+    	}
 		
 	}
 
@@ -161,12 +168,6 @@ public class servicio_alarma extends Service {
     public void onDestroy() 
     {
     	not=0;
-    	if(timer!=null){
-	    	for(int val=0;val<timer.length;val++)	{	
-	    		timer[val].cancel();
-	    		timer[val]=null;
-	    	}
-    	}
     	datosBean = null;
     	 Log.d("Alarma terminado******", "*********");
           super.onDestroy();
@@ -253,6 +254,15 @@ public class servicio_alarma extends Service {
             return null;
 
         }
+
+		@Override
+		protected void onPreExecute() {
+			 Vibrator v = (Vibrator) servicio_alarma.this.getSystemService(Context.VIBRATOR_SERVICE);
+			 v.vibrate(1000);
+			super.onPreExecute();
+		}
+        
+        
     }
     
     
@@ -276,7 +286,7 @@ public class servicio_alarma extends Service {
 
         Notification notification = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_launcher)
-                .setAutoCancel(true)
+                .setAutoCancel(false)
                 .setContentIntent(resultPendingIntent)
                 .setContentTitle(getString(R.string.app_name)).build();
 

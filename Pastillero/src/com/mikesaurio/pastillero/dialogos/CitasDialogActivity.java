@@ -64,7 +64,6 @@ public  class CitasDialogActivity extends Activity implements OnClickListener {
 	private WheelView wheel;
 	private View view2;
 
-	private int FLAG_RELOJ=-1;
 	private boolean editar= false;
 	
 	
@@ -72,12 +71,11 @@ public  class CitasDialogActivity extends Activity implements OnClickListener {
 	
 	
 	private boolean validador[]= new boolean[]{false,false};//fecha,reloj,hora
-	private  String reloj2[];
 	
 	
-	 String reloj[] = new String[] {"", "01:00","02:00","03:00","04:00","05:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00"
+	 String reloj[] = new String[] {"", "05:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00"
 			,"13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00"
-			,"21:00","22:00","23:00","24:00"};
+			,"21:00","22:00"};
 	
 
 	
@@ -274,19 +272,9 @@ public void iniciarReloj() {
 	//obtenemos las horas que le quedan al dia
 	Calendar now = Calendar.getInstance();
 	String fechas= now.get(Calendar.DAY_OF_MONTH)+"/"+((now.get(Calendar.MONTH))+1)+"/"+now.get(Calendar.YEAR);
-	if(fecha==null||fecha.equals(fechas)){
-		int hora= now.get(Calendar.HOUR_OF_DAY);
-		  reloj2 = new String[reloj.length-hora];
-		 	reloj2[0]="";
-			for(int i=hora+1, j=1;i<reloj.length;i++,j++){
-				reloj2[j]=reloj[i]; 
-			}
-			FLAG_RELOJ=0;
-			initWheel(R.id.citas_wheel_reloj, reloj2);
-	}else{
-			FLAG_RELOJ=1;
+
 			initWheel(R.id.citas_wheel_reloj, reloj);
-	}
+	
 	
 		Utilerias.hideSoftKeyboard(CitasDialogActivity.this,et_nombre);
 		flag_boton=RELOJ;
@@ -319,18 +307,22 @@ public void iniciarReloj() {
  */
 public void validaCalendario() {
 	Calendar now = Calendar.getInstance();
-	if(fecha==null){
-		fecha= now.get(Calendar.DAY_OF_MONTH)+"/"+((now.get(Calendar.MONTH))+1)+"/"+now.get(Calendar.YEAR);
-	}
+	
 	
 	SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); 
-	Date date1 = null;
+	long date1 = 0;
 	try {
-		date1 = formatter.parse(fecha);
+		if(fecha==null){
+			 fecha= now.get(Calendar.DAY_OF_MONTH)+"/"+((now.get(Calendar.MONTH))+1)+"/"+now.get(Calendar.YEAR);
+			 date1 = formatter.parse(fecha).getTime()+86400000;
+		}else{
+			date1 = formatter.parse(fecha).getTime();
+		}
+		fecha= Utilerias.getDate(date1, formatter);
 	} catch (ParseException e) {
-		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}  
+	
 	
 			flag_boton=TERMINAR;
 			btn_generico.setText(getString(R.string.terminar));
@@ -370,7 +362,7 @@ public void iniciarCalendario() {
 	
 	long date = 0;
 	try {
-		date = formatter.parse(fechaCel).getTime();
+		date = formatter.parse(fechaCel).getTime()+86400000;
 	} catch (ParseException e) {
 
 		e.printStackTrace();
@@ -455,11 +447,9 @@ public void iniciarCalendario() {
 
 		public void onScrollingFinished(WheelView wheel) {
 			wheelScrolled = false;
-				if(FLAG_RELOJ==0){
-					reloj_hora= reloj2[wheel.getCurrentItem()];
-				}else if(FLAG_RELOJ==1){
+
 					reloj_hora= reloj[wheel.getCurrentItem()];
-				}
+				
 			
 			
 		}
