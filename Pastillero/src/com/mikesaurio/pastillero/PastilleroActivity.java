@@ -153,6 +153,7 @@ public class PastilleroActivity extends ActionBarActivity {
 		
 		this.position=position;
 		if(position==0){
+			supportInvalidateOptionsMenu();
 			 fragment = new MedicinasFragment(PastilleroActivity.this);
 			Bundle args = new Bundle();
 			fragment.setArguments(args);
@@ -192,8 +193,8 @@ public class PastilleroActivity extends ActionBarActivity {
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		boolean drawerOpen = drawerLayout.isDrawerOpen(navList);
-		if(position!=2){
-			drawerOpen=false;
+		if(position==2){
+			drawerOpen=true;
 		}
 		menu.findItem(R.id.action_mas).setVisible(!drawerOpen);
 		return super.onPrepareOptionsMenu(menu);
