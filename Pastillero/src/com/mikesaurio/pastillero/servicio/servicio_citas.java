@@ -84,6 +84,7 @@ public class servicio_citas extends Service {
     		    
     			String fechaInicio=citasBean.getFecha()[val]+" "+citasBean.getHora()[val]+":00";
     			
+
     			Date date_telefono = formatter_citas.parse(fechaCel);  
     			Date date_inicio = formatter_citas.parse(fechaInicio);
     			
