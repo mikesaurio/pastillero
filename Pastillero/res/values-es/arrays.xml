@@ -2,9 +2,9 @@
 <resources>
 
     <string-array name="nav_options">
-        <item>My Medicines</item>
-       <item>My Citations</item>
-        <item>About me</item>
+        <item>Mis Medicinas</item>
+       <item>Mis Citas</item>
+        <item>Acerca de</item>
     </string-array>
 
 </resources>
